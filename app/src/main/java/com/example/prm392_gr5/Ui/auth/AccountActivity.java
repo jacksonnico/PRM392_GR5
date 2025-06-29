@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.R;
-import com.example.prm392_gr5.Ui.user.HistoryActivity;
+import com.example.prm392_gr5.Ui.booking.HistoryActivity;
 
 public class AccountActivity extends Activity {
 

@@ -61,5 +61,17 @@ public class UserRepository {
                 cursor.getString(cursor.getColumnIndexOrThrow("role"))
         );
     }
+    public boolean changePassword(String phone, String oldPassword, String newPassword) {
+        // Kiểm tra xem mật khẩu cũ có đúng không
+        Cursor cursor = db.rawQuery("SELECT * FROM users WHERE phoneNumber = ? AND password = ?", new String[]{phone, oldPassword});
+        if (!cursor.moveToFirst()) {
+            return false; // Mật khẩu cũ không đúng
+        }
+
+        // Nếu đúng thì cập nhật mật khẩu mới
+        ContentValues values = new ContentValues();
+        values.put("password", newPassword);
+        return db.update("users", values, "phoneNumber = ?", new String[]{phone}) > 0;
+    }
 
 }
