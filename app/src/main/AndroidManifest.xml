@@ -33,6 +33,20 @@
         <activity android:name=".Ui.auth.AccountInfoActivity"
             android:exported="true" />
 
+        <activity android:name=".Ui.admin.AddEditUserActivity" />
+        <activity android:name=".Ui.admin.AdminStatisticsActivity" />
+        <activity android:name=".Ui.admin.ManageUsersActivity" />
+        <activity android:name=".Ui.admin.AddEditPitchActivity" />
+        <activity android:name=".Ui.admin.ManageOwnerPitchesActivity" />
+        <activity android:name=".Ui.admin.AdminDashboardActivity" />
+        <activity android:name=".Ui.admin.ManageOwnersActivity" />
+        <activity android:name=".Ui.admin.ManageBookingsActivity" />
+        <activity android:name=".Ui.admin.BookingDetailActivity" />
+        <activity android:name=".Ui.admin.AddEditOwnerActivity" />
+        <activity android:name=".Ui.admin.ViewBookingsActivity" />
+        <activity android:name=".Ui.admin.AdminMainActivity" />
+
+
         <activity
             android:name=".Ui.auth.LoginActivity"
             android:exported="true">

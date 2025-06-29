@@ -3,12 +3,10 @@ package com.example.prm392_gr5.Data.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.content.Intent;
-import android.net.Uri;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "pitch_booking.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 6;
 
     public DatabaseHelper(Context ctx) {
         super(ctx, DB_NAME, null, DB_VERSION);
@@ -16,13 +14,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Users
+        // Users table
         db.execSQL("CREATE TABLE users (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "fullName TEXT NOT NULL," +
                 "phoneNumber TEXT NOT NULL UNIQUE," +
                 "password TEXT NOT NULL," +
-                "role TEXT NOT NULL" +
+                "role TEXT NOT NULL," +
+                "isActive INTEGER DEFAULT 1" +
                 ")");
 
         // Pitches
@@ -36,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "openTime TEXT," +
                 "closeTime TEXT," +
                 "imageUrl TEXT," +
+                "status TEXT DEFAULT 'active'," +
                 "FOREIGN KEY(ownerId) REFERENCES users(id)" +
                 ")");
 
@@ -72,30 +72,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(bookingId) REFERENCES bookings(id)" +
                 ")");
 
+        // Sample users
+        db.execSQL("INSERT INTO users (fullName, phoneNumber, password, role) VALUES " +
+                "('Nguyễn Xuân Chiến', '0836663285', 'chien2003', 'user')," +
+                "('Đỗ Văn Mạnh', '0987654321', 'ownerpass', 'owner')," +
+                "('Admin', '0999999999', 'adminpass', 'admin')");
 
-        // Users
-        db.execSQL("INSERT INTO users (fullName, phoneNumber, password, role) VALUES ('Nguyễn Xuân Chiến', '0836663285', 'chien2003', 'user')");
-        db.execSQL("INSERT INTO users (fullName, phoneNumber, password, role) VALUES ('Đỗ Văn Mạnh', '0987654321', 'ownerpass', 'owner')");
-        db.execSQL("INSERT INTO users (fullName, phoneNumber, password, role) VALUES ('Admin', '0999999999', 'adminpass', 'admin')");
+        // Sample pitches
+        db.execSQL("INSERT INTO pitches (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) VALUES " +
+                "(2, 'Sân bao cấp', 500000, '123 Đường A, Q.1', '0281234567', '07:00', '22:00', 'https://pos.nvncdn.com/b0b717-26181/art/artCT/20240812_0rmC0gAF.jpg')," +
+                "(2, 'Sân đại học quốc gia Hà Nội', 500000, '456 Đường B, Q.9', '0287654321', '06:00', '23:00', 'https://pos.nvncdn.com/b0b717-26181/art/artCT/20240812_0rmC0gAF.jpg')");
 
-        // Pitches
-        db.execSQL("INSERT INTO pitches (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) " +
-                "VALUES (2, 'Sân bao cấp', 500000, '123 Đường A, Q.1', '0281234567', '07:00', '22:00', 'https://pos.nvncdn.com/b0b717-26181/art/artCT/20240812_0rmC0gAF.jpg')");
-        db.execSQL("INSERT INTO pitches (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) " +
-                "VALUES (2, 'Sân đại học quốc gia Hà Nội', 500000, '456 Đường B, Q.9', '0287654321', '06:00', '23:00', 'https://pos.nvncdn.com/b0b717-26181/art/artCT/20240812_0rmC0gAF.jpg')");
-
-        // Services
+        // Sample services
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (1, 'Thuê bóng', 50000)");
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (1, 'Nước uống', 10000)");
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (2, 'Thuê bóng', 60000)");
 
-        // Bookings
-        db.execSQL("INSERT INTO bookings (userId, pitchId, dateTime, services, depositAmount, status) " +
-                "VALUES (1, 1, '2025-06-30T10:00:00', '[1,2]', 20000, 'pending')");
+        // Sample bookings
+        db.execSQL("INSERT INTO bookings (userId, pitchId, dateTime, services, depositAmount, status) VALUES " +
+                "(1, 1, '2025-06-30T10:00:00', '[1,2]', 20000, 'pending')," +
+                "(1, 2, '2025-07-01T12:00:00', '[3]', 30000, 'confirmed')," +
+                "(1, 1, '2025-07-02T14:00:00', '[1]', 20000, 'confirmed')");
 
-        // Payments
-        db.execSQL("INSERT INTO payments (bookingId, method, amount, status) " +
-                "VALUES (1, 'VNPay', 20000, 'completed')");
+        // Sample payments
+        db.execSQL("INSERT INTO payments (bookingId, method, amount, status) VALUES (1, 'VNPay', 20000, 'completed')");
+        db.execSQL("INSERT INTO payments (bookingId, method, amount, status, createdAt) VALUES " +
+                "(1, 'VNPay', 30000, 'completed', datetime('now', '-1 day'))," +
+                "(1, 'VNPay', 40000, 'completed', datetime('now', '-2 day'))," +
+                "(1, 'Momo', 50000, 'completed', date('now', '-10 day'))," +
+                "(1, 'Momo', 60000, 'completed', date('now', '-15 day'))," +
+                "(1, 'VNPay', 70000, 'completed', '2025-05-01')," +
+                "(1, 'VNPay', 80000, 'completed', '2025-04-15')," +
+                "(1, 'VNPay', 90000, 'completed', '2025-01-10')," +
+                "(1, 'Momo', 100000, 'completed', '2025-02-20')," +
+                "(1, 'VNPay', 110000, 'completed', '2024-12-31')," +
+                "(1, 'VNPay', 120000, 'completed', '2023-11-20')");
     }
 
     @Override
@@ -107,6 +118,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS users");
         onCreate(db);
     }
+
+
 
 
 //    public static void openMap(Context context, String address) {

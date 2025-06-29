@@ -1,5 +1,9 @@
 package com.example.prm392_gr5.Data.model;
 
+import android.database.Cursor;
+
+import java.util.List;
+
 public class Booking {
     private int id;
     private int userId;
@@ -8,11 +12,14 @@ public class Booking {
     private String services;
     private double depositAmount;
     private String status;
+    private String pitchName;
+    private String userName;
 
+    private List<String> serviceNames;
     public Booking() {}
 
     public Booking(int id, int userId, int pitchId, String dateTime,
-                   String services, double depositAmount, String status) {
+                   String services, double depositAmount, String status,String pitchName,String userName,List<String> serviceNames) {
         this.id = id;
         this.userId = userId;
         this.pitchId = pitchId;
@@ -20,6 +27,9 @@ public class Booking {
         this.services = services;
         this.depositAmount = depositAmount;
         this.status = status;
+        this.pitchName = pitchName;
+        this.userName = userName;
+        this.serviceNames = serviceNames;
     }
 
     public int getId() { return id; }
@@ -42,5 +52,22 @@ public class Booking {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getPitchName() {
+        return pitchName;
+    }
+
+    public void setPitchName(String pitchName) {
+        this.pitchName = pitchName;
+    }
+    public String getUserName() { return userName; }
+    public void setUserName(String userName) { this.userName = userName; }
+
+    public List<String> getServiceNames() { return serviceNames; }
+    public void setServiceNames(List<String> serviceNames) { this.serviceNames = serviceNames; }
+
+
+
+
 }
 

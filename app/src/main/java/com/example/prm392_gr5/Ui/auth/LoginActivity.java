@@ -13,6 +13,7 @@ import com.example.prm392_gr5.Data.model.User;
 import com.example.prm392_gr5.Data.repository.UserRepository;
 import com.example.prm392_gr5.MainActivity;
 import com.example.prm392_gr5.R;
+import com.example.prm392_gr5.Ui.admin.AdminMainActivity;
 import com.example.prm392_gr5.Ui.auth.HomeActivity;
 
 public class LoginActivity extends Activity {
@@ -110,16 +111,25 @@ public class LoginActivity extends Activity {
                 } else {
                     SharedPreferencesHelper.clear(this);
                 }
+
                 SharedPreferencesHelper.saveUserInfo(this, user.getFullName(), user.getPhoneNumber(), user.getRole());
                 showToast("Đăng nhập thành công");
-                startActivity(new Intent(this, HomeActivity.class));
-                finish();
-                /*if (user.getRole().equals("user")) {
-                    startActivity(new Intent(this, HomeActivity.class));
-                } else if (user.getRole().equals("owner")) {
-                    startActivity(new Intent(this, OwnerActivity.class)); // activity cho chủ sân
+
+                // Điều hướng theo role
+                switch (user.getRole()) {
+                    case "admin":
+                        startActivity(new Intent(this, AdminMainActivity.class));
+                        break;
+                    case "owner":
+//                        startActivity(new Intent(this, OwnerActivity.class));
+                        break;
+                    case "user":
+                    default:
+                        startActivity(new Intent(this, HomeActivity.class));
+                        break;
                 }
-                finish();*/
+
+                finish();
             } else {
                 showToast("Sai tài khoản hoặc mật khẩu");
             }
