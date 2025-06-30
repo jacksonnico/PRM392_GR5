@@ -15,7 +15,7 @@ public class PitchRepository {
     private final DatabaseHelper dbHelper;
 
     public PitchRepository(Context ctx) {
-        dbHelper = new DatabaseHelper(ctx);
+        dbHelper = new DatabaseHelper(ctx);//comment
     }
 
     public int getPitchCountByOwner(int ownerId) {

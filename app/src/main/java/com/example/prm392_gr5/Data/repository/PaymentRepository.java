@@ -13,7 +13,7 @@ public class PaymentRepository {
     private final DatabaseHelper dbHelper;
 
     public PaymentRepository(Context ctx) {
-        dbHelper = new DatabaseHelper(ctx);
+        dbHelper = new DatabaseHelper(ctx);//comment
     }
 
     // Tổng doanh thu (chỉ tính payments.status = 'completed')

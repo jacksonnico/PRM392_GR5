@@ -320,7 +320,7 @@ public class BookingRepository {
 
         cursor.close();
         db.close();
-        return bookings;
+        return bookings;//comment
     }
 
     // Helper method

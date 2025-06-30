@@ -76,7 +76,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO users (fullName, phoneNumber, password, role) VALUES " +
                 "('Nguyễn Xuân Chiến', '0836663285', 'chien2003', 'user')," +
                 "('Đỗ Văn Mạnh', '0987654321', 'ownerpass', 'owner')," +
-                "('Admin', '0999999999', 'adminpass', 'admin')");
+                "('Admin', '0999999999', 'adminpass', 'admin')");//comment
 
         // Sample pitches
         db.execSQL("INSERT INTO pitches (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) VALUES " +

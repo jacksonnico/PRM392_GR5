@@ -19,7 +19,7 @@ import java.util.List;
 public class ManageUsersActivity extends AppCompatActivity {
     private UserRepository userRepo;
     private List<User> fullUserList;
-    private List<User> filteredList;
+    private List<User> filteredList;//comment
 
     private EditText etSearch;
     private Spinner spRoleFilter;

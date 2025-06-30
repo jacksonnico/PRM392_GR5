@@ -17,7 +17,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
-        this.isActive = isActive;
+        this.isActive = isActive;//comment
     }
 
     public int getId() { return id; }

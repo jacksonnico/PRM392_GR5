@@ -29,7 +29,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard);
 
         uRepo = new UserRepository(this);
-        bRepo = new BookingRepository(this);
+        bRepo = new BookingRepository(this);//comment
         pRepo = new PaymentRepository(this);
 
         tvUsers    = findViewById(R.id.tvTotalUsers);

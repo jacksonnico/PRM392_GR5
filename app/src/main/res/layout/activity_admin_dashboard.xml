@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Tổng quan -->
+        <TextView
+            android:text="Tổng quan thống kê"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp" />
+
+        <TextView android:text="Tổng người dùng:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvTotalUsers" android:text="0" android:textStyle="bold"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
+
+        <TextView android:text="Tổng chủ sân:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvTotalOwners" android:text="0" android:textStyle="bold"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
+
+        <TextView android:text="Tổng booking:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvTotalBookings" android:text="0" android:textStyle="bold"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
+
+        <TextView android:text="Tổng doanh thu:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <TextView android:id="@+id/tvTotalRevenue" android:text="0 VNĐ" android:textStyle="bold"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="24dp" />
+
+        <!-- Lọc theo thời gian -->
+        <TextView android:text="📆 Chọn thời gian thống kê:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <Spinner android:id="@+id/spTimeFilter" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Biểu đồ -->
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pieChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Auto Refresh -->
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#2196F3"
+            android:text="🔁 Làm mới dữ liệu"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+</ScrollView>
