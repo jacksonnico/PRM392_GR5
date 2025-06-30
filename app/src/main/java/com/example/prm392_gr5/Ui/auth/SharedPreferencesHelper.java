@@ -48,6 +48,7 @@ public class SharedPreferencesHelper {
         editor.apply();
     }
 
+
     public static void clear(Context context) {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit().clear().apply();
     }

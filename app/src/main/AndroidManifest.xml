@@ -32,6 +32,8 @@
             android:exported="true" />
         <activity android:name=".Ui.auth.AccountInfoActivity"
             android:exported="true" />
+        <activity android:name=".Ui.auth.ChangePasswordActivity"
+            android:exported="true" />
 
         <activity android:name=".Ui.admin.AddEditUserActivity" />
         <activity android:name=".Ui.admin.AdminStatisticsActivity" />

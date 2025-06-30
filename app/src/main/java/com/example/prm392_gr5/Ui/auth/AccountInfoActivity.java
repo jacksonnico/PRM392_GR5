@@ -105,7 +105,7 @@ public class AccountInfoActivity extends Activity {
 
 
         btnChangePassword.setOnClickListener(v -> {
-            Intent intent = new Intent(this, ForgotPasswordActivity.class);
+            Intent intent = new Intent(this, ChangePasswordActivity.class);
             intent.putExtra("type", "changePassword");
             intent.putExtra("phone", phone);
             startActivity(intent);
