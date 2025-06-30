@@ -10,12 +10,14 @@ public class Pitch {
     private String openTime;
     private String closeTime;
     private String imageUrl;
+    private String status;//comment
+
 
     public Pitch() {}
 
     public Pitch(int id, int ownerId, String name, double price,
                  String address, String phoneNumber,
-                 String openTime, String closeTime, String imageUrl) {
+                 String openTime, String closeTime, String imageUrl,String status) {
         this.id = id;
         this.ownerId = ownerId;
         this.name = name;
@@ -25,6 +27,7 @@ public class Pitch {
         this.openTime = openTime;
         this.closeTime = closeTime;
         this.imageUrl = imageUrl;
+        this.status = status;
     }
 
     public int getId() { return id; }
@@ -53,4 +56,7 @@ public class Pitch {
 
     public String getImageUrl() { return imageUrl; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

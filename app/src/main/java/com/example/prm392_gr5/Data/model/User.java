@@ -6,15 +6,18 @@ public class User {
     private String phoneNumber;
     private String password;
     private String role;
+    private boolean isActive;
+
 
     public User() {}
 
-    public User(int id, String fullName, String phoneNumber, String password, String role) {
+    public User(int id, String fullName, String phoneNumber, String password, String role, boolean isActive) {
         this.id = id;
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
         this.password = password;
         this.role = role;
+        this.isActive = isActive;//comment
     }
 
     public int getId() { return id; }
@@ -31,4 +34,6 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public boolean isActive() { return isActive; }
+    public void setIsActive(boolean isActive) { this.isActive = isActive; }
 }

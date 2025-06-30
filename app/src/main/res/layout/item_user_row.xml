@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="12dp"
+    android:paddingHorizontal="16dp"
+    android:gravity="center_vertical"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Cột tên -->
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:text="Tên người dùng"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_height="wrap_content" />
+
+    <!-- Cột role -->
+    <TextView
+        android:id="@+id/tvUserRole"
+        android:layout_width="0dp"
+        android:layout_weight="0.2"
+        android:text="role"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"
+        android:gravity="center"
+        android:layout_height="wrap_content" />
+
+    <!-- Cột Switch -->
+    <Switch
+        android:id="@+id/switchUserStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Active"
+        android:textSize="12sp"
+        android:layout_marginEnd="8dp" />
+
+    <!-- Cột nút edit -->
+    <ImageButton
+        android:id="@+id/btnEditUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_edit"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:contentDescription="Chỉnh sửa"
+        android:padding="6dp" />
+</LinearLayout>

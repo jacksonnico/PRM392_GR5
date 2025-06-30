@@ -156,7 +156,7 @@ public class OtpActivity extends Activity {
         }
 
         if (userOtp.toString().equals(otpCode)) {
-            boolean ok = userRepo.register(new User(0, fullName, phone, password, role));
+            boolean ok = userRepo.register(new User(0, fullName, phone, password, role,true));
             if (ok) {
                 Toast.makeText(this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(OtpActivity.this, LoginActivity.class);

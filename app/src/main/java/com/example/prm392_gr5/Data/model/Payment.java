@@ -1,12 +1,12 @@
 package com.example.prm392_gr5.Data.model;
 
-public class Payment {
+public class  Payment {
     private int id;
     private int bookingId;
     private String method;
     private double amount;
     private String status;
-    private String createdAt;
+    private String createdAt;//comment
 
     public Payment() {}
 

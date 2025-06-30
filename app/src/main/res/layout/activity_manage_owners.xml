@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutManageOwners"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- Tiêu đề -->
+    <TextView
+        android:id="@+id/tvTitleManageOwners"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quản lý chủ sân"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="12dp" />
+
+    <!-- Hàng ngang chứa SearchView, Spinner và Button -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp"
+        android:weightSum="10">
+
+        <!-- Search -->
+        <SearchView
+            android:id="@+id/svSearchOwner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:queryHint="Tìm theo tên"
+            android:iconifiedByDefault="false"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Filter -->
+        <Spinner
+            android:id="@+id/spFilter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Button -->
+        <Button
+            android:id="@+id/btnAddOwner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Thêm"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:drawableLeft="@android:drawable/ic_input_add"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp" />
+    </LinearLayout>
+
+    <!-- Danh sách chủ sân -->
+    <ListView
+        android:id="@+id/lvOwners"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:paddingTop="4dp" />
+</LinearLayout>
