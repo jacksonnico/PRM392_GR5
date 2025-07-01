@@ -1,5 +1,6 @@
 package com.example.prm392_gr5.Ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.MotionEvent;
@@ -62,6 +63,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
             boolean success = userRepo.changePassword(loggedInPhone, oldPass, newPass);
             if (success) {
                 showToast("Đổi mật khẩu thành công!");
+                Intent intent = new Intent(ChangePasswordActivity.this, AccountInfoActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 finish();
             } else {
                 showToast("Mật khẩu cũ không đúng!");
