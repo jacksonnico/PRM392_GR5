@@ -113,7 +113,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="Lưu"
-        android:backgroundTint="#FF1654"
+        android:backgroundTint="#0D47A1"
         android:textColor="#FFFFFF"
         android:textStyle="bold"/>
 
