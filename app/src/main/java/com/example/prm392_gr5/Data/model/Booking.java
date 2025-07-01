@@ -1,7 +1,6 @@
 package com.example.prm392_gr5.Data.model;
 
-import android.database.Cursor;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class Booking {
@@ -13,13 +12,23 @@ public class Booking {
     private double depositAmount;
     private String status;
     private String pitchName;
-    private String userName;//comment
-
+    private String userName;
     private List<String> serviceNames;
+
+    // No-args constructor
     public Booking() {}
 
-    public Booking(int id, int userId, int pitchId, String dateTime,
-                   String services, double depositAmount, String status,String pitchName,String userName,List<String> serviceNames) {
+    // “Full” constructor với 10 tham số (giữ nguyên)
+    public Booking(int id,
+                   int userId,
+                   int pitchId,
+                   String dateTime,
+                   String services,
+                   double depositAmount,
+                   String status,
+                   String pitchName,
+                   String userName,
+                   List<String> serviceNames) {
         this.id = id;
         this.userId = userId;
         this.pitchId = pitchId;
@@ -32,6 +41,28 @@ public class Booking {
         this.serviceNames = serviceNames;
     }
 
+    public Booking(int id,
+                   int userId,
+                   int pitchId,
+                   String dateTime,
+                   String services,
+                   double depositAmount,
+                   String status) {
+        this(
+                id,
+                userId,
+                pitchId,
+                dateTime,
+                services,
+                depositAmount,
+                status,
+                "",
+                "",
+                new ArrayList<>()
+        );
+    }
+
+    // --- getters & setters ---
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -53,21 +84,12 @@ public class Booking {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public String getPitchName() {
-        return pitchName;
-    }
+    public String getPitchName() { return pitchName; }
+    public void setPitchName(String pitchName) { this.pitchName = pitchName; }
 
-    public void setPitchName(String pitchName) {
-        this.pitchName = pitchName;
-    }
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
 
     public List<String> getServiceNames() { return serviceNames; }
     public void setServiceNames(List<String> serviceNames) { this.serviceNames = serviceNames; }
-
-
-
-
 }
-

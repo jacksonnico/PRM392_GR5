@@ -9,14 +9,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.prm392_gr5.Data.model.Pitch;
+import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.R;
+import com.example.prm392_gr5.Ui.user.PitchAdapter;
+import com.example.prm392_gr5.Ui.user.PitchDetailActivity;
+
+import java.util.List;
 
 public class HomeActivity extends Activity {
 
     EditText edtSearch;
     ImageView btnSearch;
-
     LinearLayout navAccount, navHome, navFavorite, navNotify;
+
+    RecyclerView rvSuggestedPitches;
+    PitchAdapter suggestedAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +35,7 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
 
         mappingViews();
+        setupSuggestedList();
         setupEvent();
     }
 
@@ -32,9 +44,29 @@ public class HomeActivity extends Activity {
         btnSearch = findViewById(R.id.btnSearch);
 
         navAccount = findViewById(R.id.navAccount);
-        navHome = findViewById(R.id.navHome);
-        navFavorite = findViewById(R.id.navFavorite);
-        navNotify = findViewById(R.id.navNotify);
+        navHome    = findViewById(R.id.navHome);
+        navFavorite= findViewById(R.id.navFavorite);
+        navNotify  = findViewById(R.id.navNotify);
+
+        rvSuggestedPitches = findViewById(R.id.rvSuggestedPitches);
+    }
+
+    private void setupSuggestedList() {
+        // 1. LayoutManager
+        rvSuggestedPitches.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+
+        // 2. Lấy dữ liệu từ repository (bạn có thể tạo thêm phương thức getRecommendedPitches())
+        PitchRepository repo = new PitchRepository(this);
+        List<Pitch> list = repo.getAllPitches(); // hoặc getRecommendedPitches()
+
+        // 3. Tạo adapter và gán sự kiện click vào item
+        suggestedAdapter = new PitchAdapter(list, pitch -> {
+            Intent intent = new Intent(HomeActivity.this, PitchDetailActivity.class);
+            intent.putExtra("pitchId", pitch.getId());
+            startActivity(intent);
+        });
+        rvSuggestedPitches.setAdapter(suggestedAdapter);
     }
 
     private void setupEvent() {
@@ -44,12 +76,12 @@ public class HomeActivity extends Activity {
                 Toast.makeText(this, "Vui lòng nhập từ khóa tìm kiếm", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Đang tìm kiếm: " + keyword, Toast.LENGTH_SHORT).show();
+                // TODO: chuyển sang Activity hiển thị kết quả tìm kiếm
             }
         });
 
         navAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, AccountActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(HomeActivity.this, AccountActivity.class));
         });
 
         navHome.setOnClickListener(v -> {

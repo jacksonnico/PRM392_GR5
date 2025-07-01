@@ -54,7 +54,7 @@
             android:src="@android:drawable/ic_menu_search"/>
     </LinearLayout>
 
-    <!-- Danh sách -->
+    <!-- Tiêu đề danh sách -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,93 +64,14 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
-    <ScrollView
+    <!-- RecyclerView động hiển thị “Sân đề xuất” -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSuggestedPitches"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Sân 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp"
-                android:layout_marginBottom="8dp">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/san1"
-                    android:scaleType="centerCrop"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sân Đại Học FPT"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="#000"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đại học FPT"
-                        android:textSize="14sp"
-                        android:textColor="#666"/>
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Sân 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/san2"
-                    android:scaleType="centerCrop"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingStart="8dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sân Đại Học Quốc Gia"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="#000"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Thạch Hòa"
-                        android:textSize="14sp"
-                        android:textColor="#666"/>
-                </LinearLayout>
-            </LinearLayout>
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:clipToPadding="false"/>
 
     <!-- Footer Navigation -->
     <View
@@ -207,7 +128,6 @@
                 android:textSize="12sp"
                 android:textColor="#999999"/>
         </LinearLayout>
-
 
         <!-- Thông báo -->
         <LinearLayout

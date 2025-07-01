@@ -14,120 +14,195 @@ import java.util.List;
 public class PitchRepository {
     private final DatabaseHelper dbHelper;
 
-    public PitchRepository(Context ctx) {
-        dbHelper = new DatabaseHelper(ctx);//comment
+    public PitchRepository(Context context) {
+        this.dbHelper = new DatabaseHelper(context);
     }
 
-    public int getPitchCountByOwner(int ownerId) {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
+    //=== CRUD Pitches ===//
+
+    public long addPitch(Pitch pitch) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(*) FROM pitches WHERE ownerId = ?",
-                    new String[]{String.valueOf(ownerId)});
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
-            }
-            return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
+            ContentValues cv = new ContentValues();
+            cv.put("ownerId", pitch.getOwnerId());
+            cv.put("name", pitch.getName());
+            cv.put("price", pitch.getPrice());
+            cv.put("address", pitch.getAddress());
+            cv.put("phoneNumber", pitch.getPhoneNumber());
+            cv.put("openTime", pitch.getOpenTime());
+            cv.put("closeTime", pitch.getCloseTime());
+            cv.put("imageUrl", pitch.getImageUrl());
+            cv.put("status", pitch.getStatus());
+            return db.insert(DatabaseHelper.TBL_PITCHES, null, cv);
         } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
+            db.close();
         }
     }
 
-    public List<Pitch> getPitchesByOwner(int ownerId) {
-        List<Pitch> pitches = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
+    public Pitch getPitchById(int pitchId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
         try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.query("pitches", null, "ownerId = ?", new String[]{String.valueOf(ownerId)},
-                    null, null, "name ASC");
-            while (cursor.moveToNext()) {
-                Pitch pitch = extractPitchFromCursor(cursor);
-                pitches.add(pitch);
+            c = db.query(
+                    DatabaseHelper.TBL_PITCHES,
+                    null,
+                    "id = ?",
+                    new String[]{ String.valueOf(pitchId) },
+                    null, null, null
+            );
+            if (c.moveToFirst()) {
+                return extractPitchFromCursor(c);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return null;
         } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
+            if (c != null) c.close();
+            db.close();
         }
-        return pitches;
     }
 
     public List<Pitch> getAllPitches() {
-        List<Pitch> pitches = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
+        List<Pitch> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
         try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.query("pitches", null, null, null, null, null, "name ASC");
-            while (cursor.moveToNext()) {
-                Pitch pitch = new Pitch();
-                pitch.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-                pitch.setOwnerId(cursor.getInt(cursor.getColumnIndexOrThrow("ownerId")));
-                pitch.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-                pitch.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
-                pitch.setAddress(cursor.getString(cursor.getColumnIndexOrThrow("address")));
-                pitch.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber")));
-                pitch.setOpenTime(cursor.getString(cursor.getColumnIndexOrThrow("openTime")));
-                pitch.setCloseTime(cursor.getString(cursor.getColumnIndexOrThrow("closeTime")));
-                pitch.setImageUrl(cursor.getString(cursor.getColumnIndexOrThrow("imageUrl")));
-                pitch.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
-                pitches.add(pitch);
+            c = db.query(
+                    DatabaseHelper.TBL_PITCHES,
+                    null, null, null, null, null,
+                    "name ASC"
+            );
+            while (c.moveToNext()) {
+                list.add(extractPitchFromCursor(c));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return list;
         } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
-        }
-        return pitches;
-    }
-
-
-    public Pitch getPitchById(int pitchId) {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.query("pitches", null, "id = ?", new String[]{String.valueOf(pitchId)},
-                    null, null, null);
-            if (cursor.moveToFirst()) {
-                return extractPitchFromCursor(cursor);
-            }
-            return null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
+            if (c != null) c.close();
+            db.close();
         }
     }
+
+    public int updatePitch(Pitch pitch) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            ContentValues cv = new ContentValues();
+            cv.put("ownerId", pitch.getOwnerId());
+            cv.put("name", pitch.getName());
+            cv.put("price", pitch.getPrice());
+            cv.put("address", pitch.getAddress());
+            cv.put("phoneNumber", pitch.getPhoneNumber());
+            cv.put("openTime", pitch.getOpenTime());
+            cv.put("closeTime", pitch.getCloseTime());
+            cv.put("imageUrl", pitch.getImageUrl());
+            cv.put("status", pitch.getStatus());
+            return db.update(
+                    DatabaseHelper.TBL_PITCHES,
+                    cv,
+                    "id = ?",
+                    new String[]{ String.valueOf(pitch.getId()) }
+            );
+        } finally {
+            db.close();
+        }
+    }
+
+    public int deletePitch(int pitchId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        try {
+            return db.delete(
+                    DatabaseHelper.TBL_PITCHES,
+                    "id = ?",
+                    new String[]{ String.valueOf(pitchId) }
+            );
+        } finally {
+            db.close();
+        }
+    }
+
+    //=== Thống kê ===//
 
     public int getTotalPitchCount() {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
         try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT COUNT(*) FROM pitches", null);
-            if (cursor.moveToFirst()) {
-                return cursor.getInt(0);
+            c = db.rawQuery("SELECT COUNT(*) FROM " + DatabaseHelper.TBL_PITCHES, null);
+            if (c.moveToFirst()) {
+                return c.getInt(0);
             }
             return 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
         } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
+            if (c != null) c.close();
+            db.close();
         }
     }
+
+    public int getPitchCountByOwner(int ownerId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.rawQuery(
+                    "SELECT COUNT(*) FROM " + DatabaseHelper.TBL_PITCHES + " WHERE ownerId = ?",
+                    new String[]{ String.valueOf(ownerId) }
+            );
+            if (c.moveToFirst()) {
+                return c.getInt(0);
+            }
+            return 0;
+        } finally {
+            if (c != null) c.close();
+            db.close();
+        }
+    }
+
+    //=== Truy vấn theo owner ===//
+
+    public List<Pitch> getPitchesByOwner(int ownerId) {
+        List<Pitch> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
+        try {
+            c = db.query(
+                    DatabaseHelper.TBL_PITCHES,
+                    null,
+                    "ownerId = ?",
+                    new String[]{ String.valueOf(ownerId) },
+                    null, null,
+                    "name ASC"
+            );
+            while (c.moveToNext()) {
+                list.add(extractPitchFromCursor(c));
+            }
+            return list;
+        } finally {
+            if (c != null) c.close();
+            db.close();
+        }
+    }
+
+    public List<Pitch> getPitchesByOwnerPaginated(int ownerId, int page, int pageSize) {
+        List<Pitch> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
+        try {
+            int offset = (page - 1) * pageSize;
+            c = db.query(
+                    DatabaseHelper.TBL_PITCHES,
+                    null,
+                    "ownerId = ?",
+                    new String[]{ String.valueOf(ownerId) },
+                    null, null,
+                    "name ASC",
+                    offset + "," + pageSize
+            );
+            while (c.moveToNext()) {
+                list.add(extractPitchFromCursor(c));
+            }
+            return list;
+        } finally {
+            if (c != null) c.close();
+            db.close();
+        }
+    }
+
+    //=== Kích hoạt / Đình chỉ ===//
 
     public void suspendPitch(int pitchId) {
         updatePitchStatus(pitchId, "suspended");
@@ -137,140 +212,63 @@ public class PitchRepository {
         updatePitchStatus(pitchId, "active");
     }
 
+    public void suspendPitchesByOwner(int ownerId) {
+        bulkUpdateStatus("suspended", "ownerId = ?", new String[]{ String.valueOf(ownerId) });
+    }
+
+    public void activatePitchesByOwner(int ownerId) {
+        bulkUpdateStatus("active", "ownerId = ?", new String[]{ String.valueOf(ownerId) });
+    }
+
     private void updatePitchStatus(int pitchId, String status) {
-        SQLiteDatabase db = null;
+        bulkUpdateStatus(status, "id = ?", new String[]{ String.valueOf(pitchId) });
+    }
+
+    private void bulkUpdateStatus(String status, String where, String[] args) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
-            db = dbHelper.getWritableDatabase();
             ContentValues cv = new ContentValues();
             cv.put("status", status);
-            db.update("pitches", cv, "id = ?", new String[]{String.valueOf(pitchId)});
-        } catch (Exception e) {
-            e.printStackTrace();
+            db.update(DatabaseHelper.TBL_PITCHES, cv, where, args);
         } finally {
-            if (db != null && db.isOpen()) db.close();
+            db.close();
         }
     }
 
-    public List<Pitch> getPitchesByOwnerPaginated(int ownerId, int page, int pageSize) {
-        List<Pitch> pitches = new ArrayList<>();
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
-        try {
-            db = dbHelper.getReadableDatabase();
-            int offset = (page - 1) * pageSize;
-            cursor = db.query("pitches", null, "ownerId = ?", new String[]{String.valueOf(ownerId)},
-                    null, null, "name ASC", offset + "," + pageSize);
-            while (cursor.moveToNext()) {
-                Pitch pitch = extractPitchFromCursor(cursor);
-                pitches.add(pitch);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
-        }
-        return pitches;
-    }
+    //=== Truy vấn chủ sở hữu ===//
 
     public String getOwnerNameById(int ownerId) {
-        SQLiteDatabase db = null;
-        Cursor cursor = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = null;
         try {
-            db = dbHelper.getReadableDatabase();
-            cursor = db.rawQuery("SELECT fullName FROM users WHERE id = ?", new String[]{String.valueOf(ownerId)});
-            if (cursor.moveToFirst()) {
-                return cursor.getString(0);
+            c = db.rawQuery(
+                    "SELECT fullName FROM users WHERE id = ?",
+                    new String[]{ String.valueOf(ownerId) }
+            );
+            if (c.moveToFirst()) {
+                return c.getString(0);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return "Không rõ";
         } finally {
-            if (cursor != null) cursor.close();
-            if (db != null && db.isOpen()) db.close();
-        }
-        return "Không rõ";
-    }
-
-
-    private Pitch extractPitchFromCursor(Cursor cursor) {
-        Pitch pitch = new Pitch();
-        pitch.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
-        pitch.setOwnerId(cursor.getInt(cursor.getColumnIndexOrThrow("ownerId")));
-        pitch.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
-        pitch.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
-        pitch.setAddress(cursor.getString(cursor.getColumnIndexOrThrow("address")));
-        pitch.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber")));
-        pitch.setOpenTime(cursor.getString(cursor.getColumnIndexOrThrow("openTime")));
-        pitch.setCloseTime(cursor.getString(cursor.getColumnIndexOrThrow("closeTime")));
-        pitch.setImageUrl(cursor.getString(cursor.getColumnIndexOrThrow("imageUrl")));
-        pitch.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
-        return pitch;
-    }
-
-    // THÊM MỚI SÂN
-    public long addPitch(Pitch pitch) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("ownerId", pitch.getOwnerId());
-        values.put("name", pitch.getName());
-        values.put("price", pitch.getPrice());
-        values.put("address", pitch.getAddress());
-        values.put("phoneNumber", pitch.getPhoneNumber());
-        values.put("openTime", pitch.getOpenTime());
-        values.put("closeTime", pitch.getCloseTime());
-        values.put("imageUrl", pitch.getImageUrl());
-        values.put("status", pitch.getStatus());
-        long result = db.insert("pitches", null, values);
-        db.close();
-        return result;
-    }
-
-    // CẬP NHẬT SÂN
-    public int updatePitch(Pitch pitch) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("name", pitch.getName());
-        values.put("price", pitch.getPrice());
-        values.put("address", pitch.getAddress());
-        values.put("phoneNumber", pitch.getPhoneNumber());
-        values.put("openTime", pitch.getOpenTime());
-        values.put("closeTime", pitch.getCloseTime());
-        values.put("imageUrl", pitch.getImageUrl());
-        values.put("status", pitch.getStatus());
-        values.put("ownerId", pitch.getOwnerId());
-
-        int result = db.update("pitches", values, "id = ?", new String[]{String.valueOf(pitch.getId())});
-        db.close();
-        return result;
-    }
-    public void suspendPitchesByOwner(int ownerId) {
-        SQLiteDatabase db = null;
-        try {
-            db = dbHelper.getWritableDatabase();
-            ContentValues cv = new ContentValues();
-            cv.put("status", "suspended");
-            db.update("pitches", cv, "ownerId = ?", new String[]{String.valueOf(ownerId)});
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (db != null && db.isOpen()) db.close();
+            if (c != null) c.close();
+            db.close();
         }
     }
-    public void activatePitchesByOwner(int ownerId) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("status", "active");
-        db.update("pitches", cv, "ownerId = ?", new String[]{String.valueOf(ownerId)});
-        db.close();
+
+    //=== Helpers ===//
+
+    private Pitch extractPitchFromCursor(Cursor c) {
+        Pitch p = new Pitch();
+        p.setId(c.getInt(c.getColumnIndexOrThrow("id")));
+        p.setOwnerId(c.getInt(c.getColumnIndexOrThrow("ownerId")));
+        p.setName(c.getString(c.getColumnIndexOrThrow("name")));
+        p.setPrice(c.getDouble(c.getColumnIndexOrThrow("price")));
+        p.setAddress(c.getString(c.getColumnIndexOrThrow("address")));
+        p.setPhoneNumber(c.getString(c.getColumnIndexOrThrow("phoneNumber")));
+        p.setOpenTime(c.getString(c.getColumnIndexOrThrow("openTime")));
+        p.setCloseTime(c.getString(c.getColumnIndexOrThrow("closeTime")));
+        p.setImageUrl(c.getString(c.getColumnIndexOrThrow("imageUrl")));
+        p.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
+        return p;
     }
-
-
-    // XÓA SÂN
-    public int deletePitch(int pitchId) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int result = db.delete("pitches", "id = ?", new String[]{String.valueOf(pitchId)});
-        db.close();
-        return result;
-    }
-
 }

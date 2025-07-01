@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.*;
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.R;
-import com.example.prm392_gr5.Ui.booking.HistoryActivity;
+import com.example.prm392_gr5.Ui.booking.BookingHistoryActivity;
 
 public class AccountActivity extends Activity {
 
@@ -30,6 +30,7 @@ public class AccountActivity extends Activity {
         setupEvent();
         setupFooterNavigation();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -37,37 +38,38 @@ public class AccountActivity extends Activity {
     }
 
     private void mappingViews() {
-        tvFullName = findViewById(R.id.tvFullName);
-        tvPhone = findViewById(R.id.tvPhone);
-        tvAvatar = findViewById(R.id.tvAvatar);
+        tvFullName       = findViewById(R.id.tvFullName);
+        tvPhone          = findViewById(R.id.tvPhone);
+        tvAvatar         = findViewById(R.id.tvAvatar);
 
-        btnBooking = findViewById(R.id.btnBooking);
-        btnAccountInfo = findViewById(R.id.btnAccountInfo);
+        btnBooking       = findViewById(R.id.btnBooking);
+        btnAccountInfo   = findViewById(R.id.btnAccountInfo);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
-        btnLogout = findViewById(R.id.btnLogout);
-        navHome = findViewById(R.id.navHome);
-        navFavorite = findViewById(R.id.navFavorite);
-        navNotify = findViewById(R.id.navNotify);
-        navAccount = findViewById(R.id.navAccount);
+        btnLogout        = findViewById(R.id.btnLogout);
+
+        navHome          = findViewById(R.id.navHome);
+        navFavorite      = findViewById(R.id.navFavorite);
+        navNotify        = findViewById(R.id.navNotify);
+        navAccount       = findViewById(R.id.navAccount);
     }
 
     private void loadUserInfo() {
         String fullName = SharedPreferencesHelper.getFullName(this);
-        String phone = SharedPreferencesHelper.getSavedPhone(this);
+        String phone    = SharedPreferencesHelper.getSavedPhone(this);
 
         tvFullName.setText(fullName);
         tvPhone.setText(phone);
 
-        // Avatar chữ cái đầu
         if (!fullName.isEmpty()) {
             tvAvatar.setText(fullName.substring(0, 1).toUpperCase());
         }
     }
 
     private void setupEvent() {
-
+        // ← Bật listener cho nút "Đặt sân của tôi"
         btnBooking.setOnClickListener(v -> {
-            startActivity(new Intent(this, HistoryActivity.class));
+            Intent intent = new Intent(AccountActivity.this, BookingHistoryActivity.class);
+            startActivity(intent);
         });
 
         btnAccountInfo.setOnClickListener(v -> {
@@ -91,9 +93,7 @@ public class AccountActivity extends Activity {
             new AlertDialog.Builder(this)
                     .setTitle("Xoá tài khoản")
                     .setMessage("Bạn có chắc chắn muốn xoá tài khoản này?")
-                    .setPositiveButton("Xoá", (dialog, which) -> {
-                        deleteAccount();
-                    })
+                    .setPositiveButton("Xoá", (dialog, which) -> deleteAccount())
                     .setNegativeButton("Hủy", null)
                     .show();
         });
@@ -109,25 +109,20 @@ public class AccountActivity extends Activity {
         startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
+
     private void setupFooterNavigation() {
         navHome.setOnClickListener(v -> {
             startActivity(new Intent(this, HomeActivity.class));
             finish();
         });
-
-        navFavorite.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show();
-        });
-
-        navNotify.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng Thông báo đang phát triển", Toast.LENGTH_SHORT).show();
-        });
-
-        navAccount.setOnClickListener(v -> {
-            // Đang ở trang Tài khoản, có thể không cần xử lý hoặc làm mới lại
-            // Hoặc showToast để thông báo
-            Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show();
-        });
+        navFavorite.setOnClickListener(v ->
+                Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show()
+        );
+        navNotify.setOnClickListener(v ->
+                Toast.makeText(this, "Chức năng Thông báo đang phát triển", Toast.LENGTH_SHORT).show()
+        );
+        navAccount.setOnClickListener(v ->
+                Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show()
+        );
     }
-
 }

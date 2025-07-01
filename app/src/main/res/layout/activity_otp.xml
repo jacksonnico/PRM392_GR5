@@ -93,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Xác nhận"
-        android:backgroundTint="#F50057"
+        android:backgroundTint="#0D47A1"
         android:textColor="#FFFFFF"
         android:layout_marginTop="24dp"/>
 
