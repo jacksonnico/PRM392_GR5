@@ -34,4 +34,12 @@
     <color name="dark_teal_light">#00838F</color>
     <color name="dark_teal_variant">#003333</color>
     <color name="teal_dark">#00695C</color>
+    <color name="nav_selected">#003366</color>
+    <color name="nav_unselected">#999999</color>
+    <!-- Màu cơ bản -->
+    <color name="colorPrimary">#0D47A1</color>  <!-- Màu xanh đậm -->
+    <color name="colorPrimaryDark">#002171</color>
+    <color name="colorAccent">#1976D2</color>
+
+    <color name="gray_light">#EEEEEE</color> <!-- Màu tin nhắn nhận -->
 </resources>

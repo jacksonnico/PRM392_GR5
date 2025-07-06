@@ -14,12 +14,13 @@ import com.example.prm392_gr5.Data.model.Pitch;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.booking.BookingActivity;
+import com.example.prm392_gr5.Ui.UserMessagesActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class PitchDetailActivity extends AppCompatActivity {
     private ImageView ivPitchImage;
     private TextView tvPitchName, tvPitchAddress, tvPhone, tvPrice, tvOpenClose, tvLocationLabel;
-    private Button btnMap, btnBook;
+    private Button btnMap, btnBook, btnMessage;
     private Pitch p;
 
     @Override
@@ -44,6 +45,7 @@ public class PitchDetailActivity extends AppCompatActivity {
         tvLocationLabel = findViewById(R.id.tvLocationLabel);
         btnMap          = findViewById(R.id.btnMap);
         btnBook         = findViewById(R.id.btnBook);
+        btnMessage      = findViewById(R.id.btnMessage);
 
         // 3. Load dữ liệu từ DB
         p = new PitchRepository(this).getPitchById(pitchId);
@@ -68,7 +70,7 @@ public class PitchDetailActivity extends AppCompatActivity {
             }
         }
 
-        // 6. “Xem bản đồ” khi bấm btnMap
+        // 6. "Xem bản đồ" khi bấm btnMap
         btnMap.setOnClickListener(v -> {
             String addr = p.getAddress();
             Uri geoUri = Uri.parse("geo:0,0?q=" + Uri.encode(addr));
@@ -78,16 +80,24 @@ public class PitchDetailActivity extends AppCompatActivity {
                 startActivity(mapIntent);
             }
         });
+
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 7. “Đặt sân” khi bấm btnBook
+        // 7. "Đặt sân" khi bấm btnBook
         btnBook.setOnClickListener(v -> {
             Intent intent = new Intent(this, BookingActivity.class);
             intent.putExtra("pitchId", p.getId());
             startActivity(intent);
         });
 
+        // 8. "Nhắn tin" khi bấm btnMessage
+        btnMessage.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserMessagesActivity.class);
+            intent.putExtra("pitchName", p.getName());
+            intent.putExtra("phoneNumber", p.getPhoneNumber());
+            startActivity(intent);
+        });
     }
 }

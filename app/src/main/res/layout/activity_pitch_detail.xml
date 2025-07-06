@@ -111,15 +111,32 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 3. Nút Đặt sân cố định dưới cùng -->
-    <Button
-        android:id="@+id/btnBook"
+    <!-- 3. Hai nút Đặt sân và Nhắn tin cố định dưới cùng -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#0D47A1"
-        android:text="Đặt sân"
-        android:layout_margin="16dp" />
+        android:orientation="horizontal"
+        android:padding="8dp">
 
+        <Button
+            android:id="@+id/btnMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nhắn tin"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#1976D2"
+            android:layout_marginEnd="8dp" />
 
+        <Button
+            android:id="@+id/btnBook"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#0D47A1"
+            android:text="Đặt sân"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
 </LinearLayout>
