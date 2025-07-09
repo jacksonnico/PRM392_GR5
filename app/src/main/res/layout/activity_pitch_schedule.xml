@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".Ui.owner.PitchScheduleActivity">
+
+    <Spinner
+        android:id="@+id/spinner_pitches"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:minHeight="48dp"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/spinner_background"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lịch đặt sân"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/btn_prev_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/prev_day_button_text"
+            android:backgroundTint="@color/purple_700"
+            android:textColor="@android:color/white"
+            android:layout_marginEnd="8dp"
+            android:minHeight="48dp"/>
+
+        <TextView
+            android:id="@+id/tv_selected_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30/06/2025"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:paddingHorizontal="8dp"
+            android:gravity="center_vertical"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:drawablePadding="6dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/btn_next_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_day_button_text"
+            android:backgroundTint="@color/purple_700"
+            android:textColor="@android:color/white"
+            android:layout_marginStart="8dp"
+            android:minHeight="48dp"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_today" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hôm nay"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_schedule" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_schedule"/> </LinearLayout>

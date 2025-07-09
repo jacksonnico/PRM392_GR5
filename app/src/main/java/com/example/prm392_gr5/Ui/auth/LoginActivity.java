@@ -14,6 +14,7 @@ import com.example.prm392_gr5.Data.repository.UserRepository;
 import com.example.prm392_gr5.MainActivity;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.admin.AdminMainActivity;
+import com.example.prm392_gr5.Ui.owner.ManagePitchActivity;
 import com.example.prm392_gr5.Ui.auth.HomeActivity;
 
 public class LoginActivity extends Activity {
@@ -121,7 +122,7 @@ public class LoginActivity extends Activity {
                         startActivity(new Intent(this, AdminMainActivity.class));
                         break;
                     case "owner":
-//                        startActivity(new Intent(this, OwnerActivity.class));
+                       startActivity(new Intent(this, ManagePitchActivity.class));
                         break;
                     case "user":
                     default:

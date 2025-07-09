@@ -3,7 +3,11 @@
     package="com.example.prm392_gr5">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
         android:allowBackup="true"
@@ -12,13 +16,23 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_GR5">
-
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC8WRHTnpYr5-LW1l94s8f_jrdpDDVXYfM" />
         <!-- User Flow -->
         <activity
             android:name=".Ui.user.PitchDetailActivity"
             android:exported="false"
             android:label="Chi tiết sân" />
-
+        <!--Owner -->
+        <activity android:name=".Ui.owner.EditPitchActivity" />
+        <activity android:name=".Ui.owner.AddPitchActivity" />
+        <activity android:name=".Ui.owner.OwnerDashboardActivity" />
+        <activity android:name=".Ui.owner.PitchScheduleActivity" />
+        <activity android:name=".Ui.owner.ApproveBookingActivity" />
+        <activity android:name=".Ui.owner.ManageServicesActivity"/>
+        <activity android:name=".Ui.owner.MapPickerActivity" />
+        <activity android:name=".Ui.owner.ManagePitchActivity"/>
         <!-- Booking -->
         <activity
             android:name=".Ui.booking.BookingActivity"
