@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_NAME    = "pitch_booking.db";
-    private static final int    DB_VERSION = 7;
+    private static final int    DB_VERSION = 8;
 
 
     public static final String TBL_USERS    = "users";
@@ -64,11 +64,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "userId INTEGER NOT NULL, " +
                 "pitchId INTEGER NOT NULL, " +
                 "dateTime TEXT NOT NULL, " +
+                "timeSlot TEXT NOT NULL, " +      // khung giờ như \"08:00-10:00\"
                 "services TEXT, " +
-                "depositAmount REAL NOT NULL, " +
                 "status TEXT NOT NULL, " +
-                "FOREIGN KEY(userId) REFERENCES " + TBL_USERS + "(id), " +
-                "FOREIGN KEY(pitchId) REFERENCES " + TBL_PITCHES + "(id)" +
+                "FOREIGN KEY(userId) REFERENCES users(id), " +
+                "FOREIGN KEY(pitchId) REFERENCES pitches(id)" +
                 ")");
 
         // 5. payments
@@ -98,11 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (1, 'Nước uống', 10000)");
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (2, 'Thuê bóng', 60000)");
 
-        // Sample bookings
-        db.execSQL("INSERT INTO bookings (userId, pitchId, dateTime, services, depositAmount, status) VALUES " +
-                "(1, 1, '2025-06-30T10:00:00', '[1,2]', 20000, 'pending')," +
-                "(1, 2, '2025-07-01T12:00:00', '[3]', 30000, 'confirmed')," +
-                "(1, 1, '2025-07-02T14:00:00', '[1]', 20000, 'confirmed')");
+
 
         // Sample payments
         db.execSQL("INSERT INTO payments (bookingId, method, amount, status) VALUES (1, 'VNPay', 20000, 'completed')");

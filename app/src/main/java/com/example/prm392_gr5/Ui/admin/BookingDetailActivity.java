@@ -104,7 +104,7 @@ public class BookingDetailActivity extends AppCompatActivity {
             tvServicesDetail.setText("Không có dịch vụ");
         }
 
-        tvDepositAmountDetail.setText(String.format("%,.0fđ", currentBooking.getDepositAmount()));
+
 
         // Set status color
         setStatusColor(tvBookingStatusDetail, currentBooking.getStatus());

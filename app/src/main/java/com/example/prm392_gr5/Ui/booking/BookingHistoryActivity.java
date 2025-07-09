@@ -22,7 +22,7 @@ public class BookingHistoryActivity extends AppCompatActivity {
     private RecyclerView rvBookings;
     private BookingRepository bookingRepo;
     private PitchRepository pitchRepo;
-    private int currentUserId = 1; // giả định userId
+    private int currentUserId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,53 +33,59 @@ public class BookingHistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        rvBookings = findViewById(R.id.rvBookings);
+        rvBookings   = findViewById(R.id.rvBookings);
         rvBookings.setLayoutManager(new LinearLayoutManager(this));
 
         bookingRepo = new BookingRepository(this);
-        pitchRepo = new PitchRepository(this);
+        pitchRepo   = new PitchRepository(this);
 
-        // Nút xoá toàn bộ lịch sử
-        Button btnClearHistory = findViewById(R.id.btnClearHistory);
-        btnClearHistory.setOnClickListener(v -> confirmDeleteHistory());
+        Button btnClear = findViewById(R.id.btnClearHistory);
+        btnClear.setOnClickListener(v -> confirmDeleteHistory());
 
-        loadBookings(); // Load lần đầu
+        loadBookings();
     }
 
     private void loadBookings() {
         List<Booking> bookings = bookingRepo.getBookingsByUser(currentUserId);
-        List<Pitch> pitches = pitchRepo.getAllPitches();
+        List<Pitch>   pitches  = pitchRepo.getAllPitches();
 
         BookingAdapter adapter = new BookingAdapter(
                 this,
                 bookings,
                 pitches,
-                bookingId -> {
-                    if (bookingRepo.cancelBooking(bookingId)) {
-                        Toast.makeText(this, "Hủy thành công", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Hủy thất bại", Toast.LENGTH_SHORT).show();
-                    }
-                    loadBookings(); // reload sau khi hủy
-                }
+                bookingId -> new AlertDialog.Builder(this)
+                        .setTitle("Xác nhận hủy")
+                        .setMessage("Bạn có chắc chắn muốn hủy booking này?")
+                        .setPositiveButton("Hủy", (d, w) -> {
+                            boolean ok = bookingRepo.cancelBooking(bookingId);
+                            Toast.makeText(
+                                    this,
+                                    ok ? "Hủy thành công" : "Hủy thất bại",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            loadBookings();
+                        })
+                        .setNegativeButton("Không", null)
+                        .show()
         );
+
         rvBookings.setAdapter(adapter);
     }
 
     private void confirmDeleteHistory() {
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận xoá lịch sử")
-                .setMessage("Bạn có chắc chắn muốn xoá tất cả lịch sử đặt sân?")
-                .setPositiveButton("Xoá", (dialog, which) -> {
-                    boolean success = bookingRepo.deleteAllBookingsByUser(currentUserId);
-                    if (success) {
-                        Toast.makeText(this, "Đã xoá tất cả lịch sử", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, "Không có gì để xoá", Toast.LENGTH_SHORT).show();
-                    }
+                .setTitle("Xác nhận xóa lịch sử")
+                .setMessage("Bạn có chắc chắn muốn xóa toàn bộ lịch sử đặt sân?")
+                .setPositiveButton("Xóa", (dlg, w) -> {
+                    boolean ok = bookingRepo.deleteAllBookingsByUser(currentUserId);
+                    Toast.makeText(
+                            this,
+                            ok ? "Đã xóa toàn bộ lịch sử" : "Không có gì để xóa",
+                            Toast.LENGTH_SHORT
+                    ).show();
                     loadBookings();
                 })
-                .setNegativeButton("Huỷ", null)
+                .setNegativeButton("Hủy", null)
                 .show();
     }
 }

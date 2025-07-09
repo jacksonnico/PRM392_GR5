@@ -78,7 +78,7 @@ public class BookingListAdapter extends RecyclerView.Adapter<BookingListAdapter.
         String servicesDisplay = getServicesDisplayText(booking);
         holder.tvServices.setText("Dịch vụ: " + servicesDisplay);
 
-        holder.tvDepositAmount.setText("Cọc: " + String.format("%,.0fđ", booking.getDepositAmount()));
+
 
         // Set status với màu sắc tương ứng
         holder.tvStatus.setText(booking.getStatus());
