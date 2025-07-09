@@ -23,17 +23,17 @@ public class PaymentActivity extends AppCompatActivity {
 
         bookingRepo = new BookingRepository(this);
 
-        // Lấy bookingId từ Intent
-        final long bookingId = getIntent().getLongExtra("bookingId", -1);
-        if (bookingId < 0) {
+        // Lấy bookingIds từ Intent (array)
+        Long[] bookingIds = (Long[]) getIntent().getSerializableExtra("bookingIds");
+        if (bookingIds == null || bookingIds.length == 0) {
             Toast.makeText(this, "Booking không hợp lệ", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         // Bind views
-        ImageView ivQr      = findViewById(R.id.imageView);
-        Button btnConfirm   = findViewById(R.id.btnConfirmPayment);
+        ImageView ivQr = findViewById(R.id.imageView);
+        Button btnConfirm = findViewById(R.id.btnConfirmPayment);
         String qrUrl = "https://img.vietqr.io/image/BIDV-3950175888-compact2.png"
                 + "?amount=500000"
                 + "&addInfo=Chuy%E1%BB%83n%20ti%E1%BB%81n%20s%C3%A2n";
@@ -46,10 +46,19 @@ public class PaymentActivity extends AppCompatActivity {
 
         // Xác nhận thanh toán
         btnConfirm.setOnClickListener(v -> {
-            boolean ok = bookingRepo.updateBookingStatus((int) bookingId, "confirmed");
+            boolean allSuccess = true;
+
+            // Cập nhật trạng thái cho tất cả booking
+            for (Long bookingId : bookingIds) {
+                boolean ok = bookingRepo.updateBookingStatus(bookingId.intValue(), "confirmed");
+                if (!ok) {
+                    allSuccess = false;
+                }
+            }
+
             Toast.makeText(
                     this,
-                    ok ? "Thanh toán thành công" : "Cập nhật trạng thái thất bại",
+                    allSuccess ? "Thanh toán thành công" : "Có lỗi xảy ra khi cập nhật trạng thái",
                     Toast.LENGTH_SHORT
             ).show();
 

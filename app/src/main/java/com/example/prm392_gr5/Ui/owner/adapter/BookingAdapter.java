@@ -50,7 +50,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         System.out.println("User Name: " + booking.userName);
         System.out.println("Pitch Name: " + booking.pitchName);
         System.out.println("Raw DateTime: " + booking.dateTime);
-        System.out.println("Deposit: " + booking.depositAmount);
+//        System.out.println("Deposit: " + booking.depositAmount);
 
         holder.tvUserName.setText(booking.userName);
         holder.tvPitchName.setText(booking.pitchName);
@@ -59,7 +59,7 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         System.out.println("Final formatted: " + formattedDateTime);
 
         holder.tvDateTime.setText(formattedDateTime);
-        holder.tvDeposit.setText(String.format("%.0f VNĐ", booking.depositAmount));
+//        holder.tvDeposit.setText(String.format("%.0f VNĐ", booking.depositAmount));
 
         // Set click listeners
         holder.btnApprove.setOnClickListener(v -> {
