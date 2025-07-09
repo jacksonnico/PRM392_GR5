@@ -4,15 +4,29 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log; // Thêm Log để debug
 
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.Data.model.Pitch;
+import com.example.prm392_gr5.Data.model.ScheduleInfo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class PitchRepository {
     private final DatabaseHelper dbHelper;
+    // Định dạng cho datetime trong DB (yyyy-MM-dd'T'HH:mm:ss)
+    private final SimpleDateFormat DB_DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+    // Định dạng chỉ giờ để hiển thị khung giờ (HH:mm)
+    private final SimpleDateFormat TIME_SLOT_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
+    // Định dạng ngày cho truy vấn DB (yyyy-MM-dd)
+    private final SimpleDateFormat DB_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
 
     public PitchRepository(Context context) {
         this.dbHelper = new DatabaseHelper(context);
@@ -20,6 +34,24 @@ public class PitchRepository {
 
     //=== CRUD Pitches ===//
 
+    public boolean insertPitch(int ownerId, String name, String address, double price,
+                               String openTime, String closeTime, String phoneNumber, String imageUrl) {
+        ContentValues values = new ContentValues();
+        values.put("ownerId", ownerId);
+        values.put("name", name);
+        values.put("address", address);
+        values.put("price", price);
+        values.put("phoneNumber", phoneNumber);
+        values.put("openTime", openTime);
+        values.put("closeTime", closeTime);
+        values.put("imageUrl", imageUrl);
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long result = db.insert("pitches", null, values);
+        db.close();
+
+        return result != -1;
+    }
     public long addPitch(Pitch pitch) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         try {
@@ -177,6 +209,29 @@ public class PitchRepository {
         }
     }
 
+    public List<Pitch> getPitchesByOwnerId(int ownerId) {
+        List<Pitch> pitches = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM pitches WHERE ownerId = ?", new String[]{String.valueOf(ownerId)});
+        while (cursor.moveToNext()) {
+            Pitch pitch = new Pitch();
+            pitch.setId(cursor.getInt(cursor.getColumnIndexOrThrow("id")));
+            pitch.setOwnerId(ownerId);
+            pitch.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            pitch.setAddress(cursor.getString(cursor.getColumnIndexOrThrow("address")));
+            pitch.setOpenTime(cursor.getString(cursor.getColumnIndexOrThrow("openTime")));
+            pitch.setCloseTime(cursor.getString(cursor.getColumnIndexOrThrow("closeTime")));
+            pitch.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber")));
+            pitch.setImageUrl(cursor.getString(cursor.getColumnIndexOrThrow("imageUrl")));
+            pitch.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow("price")));
+            pitches.add(pitch);
+        }
+
+        cursor.close();
+        db.close();
+        return pitches;
+    }
     public List<Pitch> getPitchesByOwnerPaginated(int ownerId, int page, int pageSize) {
         List<Pitch> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -256,6 +311,139 @@ public class PitchRepository {
     }
 
     //=== Helpers ===//
+    public List<ScheduleInfo> getScheduleForPitch(int pitchId, Calendar selectedDate, Pitch pitch) {
+        List<ScheduleInfo> scheduleList = generateTimeSlots(pitch);
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectedDateStr = DB_DATE_FORMAT.format(selectedDate.getTime());
+        Log.d("PitchRepository", "Querying schedule for Pitch ID: " + pitchId + " on Date: " + selectedDateStr);
+
+
+        // Chú ý: DATE(b.dateTime) chỉ lấy phần ngày, điều này hoạt động tốt
+        String query = "SELECT b.id, b.dateTime, b.status, u.fullName, u.phoneNumber " +
+                "FROM bookings b JOIN users u ON b.userId = u.id " +
+                "WHERE b.pitchId = ? AND DATE(b.dateTime) = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(pitchId), selectedDateStr});
+        Log.d("PitchRepository", "Bookings found: " + cursor.getCount());
+
+        try {
+            while (cursor.moveToNext()) {
+                String dateTimeFromDb = cursor.getString(cursor.getColumnIndexOrThrow("dateTime"));
+                Log.d("PitchRepository", "Booking DateTime from DB: " + dateTimeFromDb);
+
+                Date bookingStartDateTime = null;
+                try {
+                    // Cố gắng parse theo định dạng chuẩn yyyy-MM-dd'T'HH:mm:ss
+                    bookingStartDateTime = DB_DATETIME_FORMAT.parse(dateTimeFromDb);
+                } catch (ParseException e) {
+                    Log.e("PitchRepository", "Error parsing booking dateTime: " + dateTimeFromDb + ". " + e.getMessage());
+                    // Log the error, but continue to process valid entries.
+                    // If you encounter "HH:mm-HH:mm" here, it will fail.
+                    // You MUST fix your database data.
+                    continue; // Skip this malformed entry
+                }
+
+                String bookingTimeSlotStr = TIME_SLOT_FORMAT.format(bookingStartDateTime); // Ví dụ: "10:00"
+                Log.d("PitchRepository", "Parsed booking time slot: " + bookingTimeSlotStr);
+
+
+                for (ScheduleInfo schedule : scheduleList) {
+                    // So sánh khung giờ của booking với khung giờ được tạo
+                    if (schedule.timeSlot.equals(bookingTimeSlotStr)) {
+                        schedule.isBooked = true;
+                        schedule.customerName = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
+                        schedule.customerPhone = cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
+                        schedule.status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
+                        schedule.bookingId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+                        Log.d("PitchRepository", "Matched schedule slot: " + schedule.timeSlot + " Status: " + schedule.status);
+                        break; // Đã tìm thấy và cập nhật, thoát vòng lặp
+                    }
+                }
+            }
+        } finally {
+            cursor.close();
+            db.close();
+        }
+
+        return scheduleList;
+    }
+
+    private List<ScheduleInfo> generateTimeSlots(Pitch pitch) {
+        List<ScheduleInfo> timeSlots = new ArrayList<>();
+        SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm", Locale.getDefault()); // Dùng cho openTime/closeTime của pitch
+
+        try {
+            // Parse openTime và closeTime từ Pitch
+            Date openTime = hourMinuteFormat.parse(pitch.getOpenTime());
+            Date closeTime = hourMinuteFormat.parse(pitch.getCloseTime());
+
+            Calendar slotCal = Calendar.getInstance();
+            Calendar openCal = Calendar.getInstance();
+            Calendar closeCal = Calendar.getInstance();
+
+            // Set chỉ giờ và phút từ openTime/closeTime
+            openCal.setTime(openTime);
+            closeCal.setTime(closeTime);
+
+            slotCal.set(Calendar.HOUR_OF_DAY, openCal.get(Calendar.HOUR_OF_DAY));
+            slotCal.set(Calendar.MINUTE, openCal.get(Calendar.MINUTE));
+            slotCal.set(Calendar.SECOND, 0);
+            slotCal.set(Calendar.MILLISECOND, 0);
+
+            // Giờ kết thúc cũng chỉ lấy giờ và phút
+            Calendar endTimeForLoop = Calendar.getInstance();
+            endTimeForLoop.set(Calendar.HOUR_OF_DAY, closeCal.get(Calendar.HOUR_OF_DAY));
+            endTimeForLoop.set(Calendar.MINUTE, closeCal.get(Calendar.MINUTE));
+            endTimeForLoop.set(Calendar.SECOND, 0);
+            endTimeForLoop.set(Calendar.MILLISECOND, 0);
+
+            Log.d("PitchRepository", "Generating time slots from " + hourMinuteFormat.format(slotCal.getTime()) + " to " + hourMinuteFormat.format(endTimeForLoop.getTime()));
+
+            // Tạo các khung giờ, mỗi khung 1 tiếng
+            while (slotCal.before(endTimeForLoop) || (slotCal.get(Calendar.HOUR_OF_DAY) == endTimeForLoop.get(Calendar.HOUR_OF_DAY) && slotCal.get(Calendar.MINUTE) == endTimeForLoop.get(Calendar.MINUTE))) {
+                ScheduleInfo schedule = new ScheduleInfo();
+                schedule.timeSlot = TIME_SLOT_FORMAT.format(slotCal.getTime()); // Định dạng HH:mm
+                schedule.isBooked = false;
+                timeSlots.add(schedule);
+                Log.d("PitchRepository", "Generated slot: " + schedule.timeSlot);
+
+                // Cộng thêm 1 tiếng cho khung giờ tiếp theo
+                slotCal.add(Calendar.HOUR_OF_DAY, 1);
+            }
+
+        } catch (ParseException e) {
+            Log.e("PitchRepository", "Error parsing pitch open/close time: " + e.getMessage());
+            // Fallback to default 08:00-22:00 if pitch times are invalid
+            return generateDefaultTimeSlots();
+        }
+
+        return timeSlots;
+    }
+
+    // Fallback method to generate default time slots
+    private List<ScheduleInfo> generateDefaultTimeSlots() {
+        List<ScheduleInfo> timeSlots = new ArrayList<>();
+        Calendar slot = Calendar.getInstance();
+        slot.set(Calendar.HOUR_OF_DAY, 8);
+        slot.set(Calendar.MINUTE, 0);
+        slot.set(Calendar.SECOND, 0);
+
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR_OF_DAY, 22);
+        end.set(Calendar.MINUTE, 0);
+        end.set(Calendar.SECOND, 0);
+
+        while (slot.before(end)) {
+            ScheduleInfo schedule = new ScheduleInfo();
+            schedule.timeSlot = TIME_SLOT_FORMAT.format(slot.getTime());
+            schedule.isBooked = false;
+            timeSlots.add(schedule);
+            slot.add(Calendar.HOUR_OF_DAY, 1); // 1 hour intervals
+        }
+        return timeSlots;
+    }
+
 
     private Pitch extractPitchFromCursor(Cursor c) {
         Pitch p = new Pitch();
