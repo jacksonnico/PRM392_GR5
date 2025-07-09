@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:text="Tên người dùng"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/tv_pitch_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            android:text="Tên sân bóng"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/tv_date_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:text="Thời gian: DD/MM/YYYY HH:MM"
+            android:textColor="#666666"
+            android:maxLines="2"/>
+
+        <TextView
+            android:id="@+id/tv_deposit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:text="Tiền cọc: 0 VNĐ"
+            android:textColor="#666666"
+            android:maxLines="1"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/btn_approve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duyệt"
+                android:backgroundTint="@android:color/holo_green_light"
+                android:textColor="@android:color/white"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btn_reject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Từ chối"
+                android:backgroundTint="@android:color/holo_red_light"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <EditText
+        android:id="@+id/et_service_name" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên dịch vụ"
+        android:inputType="textCapSentences"
+        android:minHeight="48dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_edit_text_rounded"
+        android:padding="12dp"/>
+
+    <EditText
+        android:id="@+id/et_service_price" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Giá (VNĐ)"
+        android:inputType="numberDecimal"
+        android:minHeight="48dp"
+        android:background="@drawable/bg_edit_text_rounded"
+        android:padding="12dp"/>
+
+</LinearLayout>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ui.owner.EditPitchActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chỉnh sửa thông tin sân"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="24dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <EditText
+                android:id="@+id/et_pitch_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tên sân"
+                android:inputType="textCapWords"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <EditText
+                android:id="@+id/et_pitch_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Giá/giờ (VNĐ)"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <EditText
+                android:id="@+id/et_pitch_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Địa chỉ"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <EditText
+                android:id="@+id/et_pitch_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Số điện thoại liên hệ"
+                android:inputType="phone"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <EditText
+                    android:id="@+id/et_open_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Giờ mở cửa (HH:mm)"
+                    android:inputType="time"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <EditText
+                    android:id="@+id/et_close_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Giờ đóng cửa (HH:mm)"
+                    android:inputType="time"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            <EditText
+                android:id="@+id/et_image_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="URL ảnh sân"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+            <Button
+                android:id="@+id/btn_update_pitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cập nhật"
+                android:layout_marginEnd="16dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"/>
+
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hủy"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

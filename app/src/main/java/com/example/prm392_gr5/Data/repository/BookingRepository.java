@@ -388,4 +388,27 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+    public List<Booking> getPendingBookings(int ownerId) {
+        List<Booking> bookings = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT b.*, p.name AS pitchName, u.fullName AS userName " +
+                        "FROM bookings b " +
+                        "JOIN pitches p ON b.pitchId = p.id " +
+                        "LEFT JOIN users u ON b.userId = u.id " +
+                        "WHERE p.ownerId = ? AND b.status = 'pending' " +
+                        "ORDER BY b.dateTime DESC",
+                new String[]{String.valueOf(ownerId)}
+        );
+        while (cursor.moveToNext()) {
+            bookings.add(createBookingFromCursor(cursor));
+        }
+        cursor.close();
+        db.close();
+        return bookings;
+    }
+    public String getServiceText(String servicesJson) {
+        List<String> serviceNames = getServiceNamesByIds(servicesJson);
+        return String.join(", ", serviceNames);
+    }
 }
