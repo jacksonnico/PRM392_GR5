@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -68,7 +69,24 @@ public class PitchDetailActivity extends AppCompatActivity {
             }
         }
 
-        // 6. “Xem bản đồ” khi bấm btnMap
+        // 6. Click-to-call functionality for phone number
+        tvPhone.setOnClickListener(v -> {
+            String phoneNumber = p.getPhoneNumber();
+            if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                try {
+                    // Create intent to make phone call
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + phoneNumber));
+                    startActivity(callIntent);
+                } catch (Exception e) {
+                    Toast.makeText(this, "Không thể thực hiện cuộc gọi", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // 7. "Xem bản đồ" khi bấm btnMap
         btnMap.setOnClickListener(v -> {
             String addr = p.getAddress();
             Uri geoUri = Uri.parse("geo:0,0?q=" + Uri.encode(addr));
@@ -76,18 +94,21 @@ public class PitchDetailActivity extends AppCompatActivity {
             mapIntent.setPackage("com.google.android.apps.maps");
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
+            } else {
+                Toast.makeText(this, "Không tìm thấy ứng dụng bản đồ", Toast.LENGTH_SHORT).show();
             }
         });
+
+        // 8. Setup toolbar
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // 7. “Đặt sân” khi bấm btnBook
+        // 9. "Đặt sân" khi bấm btnBook
         btnBook.setOnClickListener(v -> {
             Intent intent = new Intent(this, BookingActivity.class);
             intent.putExtra("pitchId", p.getId());
             startActivity(intent);
         });
-
     }
 }

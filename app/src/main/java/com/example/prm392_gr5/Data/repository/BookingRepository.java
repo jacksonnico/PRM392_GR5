@@ -469,5 +469,54 @@ public class BookingRepository {
         }
         return null;
     }
+    public double getBookingAmount(int bookingId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Query to get booking details with pitch price
+        String query = "SELECT p.price, b.services " +
+                "FROM bookings b " +
+                "JOIN pitches p ON b.pitchId = p.id " +
+                "WHERE b.id = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(bookingId)});
+
+        double totalAmount = 0;
+        if (cursor.moveToFirst()) {
+            double pitchPrice = cursor.getDouble(0);
+            String services = cursor.getString(1);
+
+            totalAmount = pitchPrice;
+            if (services != null && !services.isEmpty()) {
+                totalAmount += getServicesCost(services);
+            }
+        }
+
+        cursor.close();
+        return totalAmount;
+    }
+
+    private double getServicesCost(String servicesString) {
+        if (servicesString == null || servicesString.isEmpty()) {
+            return 0;
+        }
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        double totalServiceCost = 0;
+
+        // Split services by comma if multiple services
+        String[] serviceIds = servicesString.split(",");
+
+        for (String serviceId : serviceIds) {
+            String query = "SELECT price FROM services WHERE id = ?";
+            Cursor cursor = db.rawQuery(query, new String[]{serviceId.trim()});
+
+            if (cursor.moveToFirst()) {
+                totalServiceCost += cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return totalServiceCost;
+    }
 
 }

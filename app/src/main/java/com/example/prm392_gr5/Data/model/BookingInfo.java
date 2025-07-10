@@ -2,9 +2,6 @@ package com.example.prm392_gr5.Data.model;
 
 import java.util.List;
 
-/**
- * Wrapper model combining Booking and related Pitch/User info for display
- */
 public class BookingInfo {
     public int id;
     public int userId;
@@ -25,9 +22,7 @@ public class BookingInfo {
 
     public List<String> serviceNames;
 
-    /**
-     * Construct BookingInfo from Booking and Pitch models
-     */
+
     public BookingInfo(Booking booking, Pitch pitch) {
         this.id         = booking.getId();
         this.userId     = booking.getUserId();

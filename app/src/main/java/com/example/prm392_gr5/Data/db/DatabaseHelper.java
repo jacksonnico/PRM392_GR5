@@ -90,8 +90,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("INSERT INTO " + TBL_PITCHES +
                 " (ownerId,name,price,address,phoneNumber,openTime,closeTime,imageUrl) VALUES" +
-                "(1, 'Sân Bóng Đá Trường Chinh', 500000, '23 Trường Chinh, Đống Đa, Hà Nội', '0243567890', '06:00', '22:00', 'https://cdn-images.vtv.vn/thumb_w/640/2022/12/25/photo-1-1671937473897614575516.jpeg')," +
-                "(2, 'Sân Thăng Long', 550000, '45 Phố Huế, Hai Bà Trưng, Hà Nội', '0243987123', '07:00', '21:00', 'https://cdn-images.vtv.vn/thumb_w/640/2022/12/25/photo-1-1671937473897614575516.jpeg') "
+                "(1, 'Sân Bóng Đá Bao Cấp', 500000, 'Hoa Lac Hi-tech Park, Tân Xá, Hà Nội', '0979504194', '06:00', '22:00', 'https://afd.com.vn/images/image/tin/co-san-bong.jpg')," +
+                "(2, 'Sân Bóng Đại Học Quốc Gia', 550000, 'Tuyến đường Việt Nhật, Thạch Hoà, Hà Nội, 13100', '0961150113', '07:00', '21:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA_gd_yXrzRrWWhzxAKf-XKPWdzayju_O7ig&s.jpg'), "+
+                "(3, 'Sân Bóng 5 Cửa Ô', 500000, '2GHX+425, Tân Xá, Thạch Thất, Hà Nội', '0979504194', '06:00', '22:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCcMUCBLWw2FVmuRYVJbkQc2TvZ5lVGwTHEQ&s.jpg')"
+
         );
         // Sample services
         db.execSQL("INSERT INTO services (pitchId, name, price) VALUES (1, 'Thuê bóng', 50000)");
@@ -100,19 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-        // Sample payments
-        db.execSQL("INSERT INTO payments (bookingId, method, amount, status) VALUES (1, 'VNPay', 20000, 'completed')");
-        db.execSQL("INSERT INTO payments (bookingId, method, amount, status, createdAt) VALUES " +
-                "(1, 'VNPay', 30000, 'completed', datetime('now', '-1 day'))," +
-                "(1, 'VNPay', 40000, 'completed', datetime('now', '-2 day'))," +
-                "(1, 'Momo', 50000, 'completed', date('now', '-10 day'))," +
-                "(1, 'Momo', 60000, 'completed', date('now', '-15 day'))," +
-                "(1, 'VNPay', 70000, 'completed', '2025-05-01')," +
-                "(1, 'VNPay', 80000, 'completed', '2025-04-15')," +
-                "(1, 'VNPay', 90000, 'completed', '2025-01-10')," +
-                "(1, 'Momo', 100000, 'completed', '2025-02-20')," +
-                "(1, 'VNPay', 110000, 'completed', '2024-12-31')," +
-                "(1, 'VNPay', 120000, 'completed', '2023-11-20')");
+
     }
 
     @Override
