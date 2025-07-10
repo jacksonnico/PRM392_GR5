@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.prm392_gr5.Data.model.Pitch;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.R;
+import com.example.prm392_gr5.Ui.user.NotificationActivity;
 import com.example.prm392_gr5.Ui.user.PitchAdapter;
 import com.example.prm392_gr5.Ui.user.PitchDetailActivity;
 
@@ -73,6 +74,7 @@ public class HomeActivity extends Activity {
         suggestedAdapter = new PitchAdapter(filteredPitchList, pitch -> {
             Intent intent = new Intent(HomeActivity.this, PitchDetailActivity.class);
             intent.putExtra("pitchId", pitch.getId());
+            intent.putExtra("userId", SharedPreferencesHelper.getUserId(this)); // Thêm truyền userId
             startActivity(intent);
         });
         rvSuggestedPitches.setAdapter(suggestedAdapter);
@@ -165,7 +167,7 @@ public class HomeActivity extends Activity {
         });
 
         navNotify.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng Thông báo đang phát triển", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
         });
     }
 

@@ -10,6 +10,7 @@ import android.widget.*;
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.booking.BookingHistoryActivity;
+import com.example.prm392_gr5.Ui.user.NotificationActivity;
 
 public class AccountActivity extends Activity {
 
@@ -118,9 +119,9 @@ public class AccountActivity extends Activity {
         navFavorite.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show()
         );
-        navNotify.setOnClickListener(v ->
-                Toast.makeText(this, "Chức năng Thông báo đang phát triển", Toast.LENGTH_SHORT).show()
-        );
+        navNotify.setOnClickListener(v -> {
+            startActivity(new Intent(this, NotificationActivity.class));
+        });
         navAccount.setOnClickListener(v ->
                 Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show()
         );
