@@ -6,7 +6,7 @@ public class  Payment {
     private String method;
     private double amount;
     private String status;
-    private String createdAt;//comment
+    private String createdAt;
 
     public Payment() {}
 

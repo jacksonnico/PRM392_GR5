@@ -10,7 +10,7 @@ public class Pitch {
     private String openTime;
     private String closeTime;
     private String imageUrl;
-    private String status;//comment
+    private String status;
 
 
     public Pitch() {}

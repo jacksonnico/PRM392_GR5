@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PRM392_GR5</string>
+    <string name="prev_day_button_text">Ngày trước</string>
+    <string name="next_day_button_text">Ngày sau</string>
+    <string name="app_name">Pitch24/7</string>
 </resources>

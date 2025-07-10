@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="Lịch sử đặt sân"
+        android:background="@color/background_light"
+        app:titleTextColor="@color/black"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        style="@style/Widget.MaterialComponents.Toolbar.Primary" />
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:padding="16dp">
+
+        <!-- Nút Xóa toàn bộ lịch sử -->
+        <Button
+            android:id="@+id/btnClearHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xóa tất cả lịch sử đặt sân"
+            android:backgroundTint="@color/dark_teal"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- RecyclerView hiển thị danh sách booking -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvBookings"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
