@@ -26,6 +26,7 @@ public class UserRepository {
         }
         cursor.close();
         return null;
+
     }
 
     public boolean isPhoneExists(String phone) {
