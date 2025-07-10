@@ -2,4 +2,5 @@
 <resources>
     <string name="prev_day_button_text">Ngày trước</string>
     <string name="next_day_button_text">Ngày sau</string>
+    <string name="app_name">Pitch24/7</string>
 </resources>
