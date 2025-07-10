@@ -17,6 +17,7 @@ import com.example.prm392_gr5.Data.model.Pitch;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.auth.AccountActivity;
+import com.example.prm392_gr5.Ui.user.NotificationActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -79,22 +80,26 @@ public class ManagePitchActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         bottomNavigationView.setSelectedItemId(R.id.nav_pitches);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = null; // 👈 Chỉ khai báo 1 lần ở đây
+
                 int itemId = item.getItemId();
-                Intent intent = null;
 
                 if (itemId == R.id.nav_pitches) {
                     // Đang ở màn hình này, không làm gì cả
                     return true;
+
                 } else if (itemId == R.id.nav_dashboard) {
                     intent = new Intent(ManagePitchActivity.this, OwnerDashboardActivity.class);
+
                 } else if (itemId == R.id.nav_schedule) {
                     intent = new Intent(ManagePitchActivity.this, PitchScheduleActivity.class);
+
                 } else if (itemId == R.id.nav_notifications) {
-                    Toast.makeText(ManagePitchActivity.this, "Chức năng Thông báo chưa triển khai", Toast.LENGTH_SHORT).show();
-                    return false;
+                    intent = new Intent(ManagePitchActivity.this, OwnerNotificationActivity.class); // 👈 mở màn Owner Notification
                 } else if (itemId == R.id.nav_account) {
                     intent = new Intent(ManagePitchActivity.this, AccountActivity.class);
                 }
@@ -105,10 +110,13 @@ public class ManagePitchActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
+
                 return false;
             }
         });
     }
+
+
 
     @Override
     protected void onResume() {
