@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_gr5.Data.adapter.UserMessageAdapter;
-import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.Data.model.UserMessageSummary;
+import com.example.prm392_gr5.Data.repository.OwnerChatSummaryRepository;
 import com.example.prm392_gr5.R;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
 public class UserMessageListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserMessageAdapter adapter;
-    private DatabaseHelper dbHelper;
+    private OwnerChatSummaryRepository summaryRepo; // Thay DatabaseHelper bằng repository
     private int ownerId;
     private int userId; // ✅ Thêm biến userId
 
@@ -25,7 +25,7 @@ public class UserMessageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_message_list);
 
         recyclerView = findViewById(R.id.recyclerViewUserMessages);
-        dbHelper = new DatabaseHelper(this);
+        summaryRepo = new OwnerChatSummaryRepository(this); // Khởi tạo repository với Context
 
         // Nhận ownerId và userId từ Intent
         ownerId = getIntent().getIntExtra("ownerId", 0);
@@ -37,7 +37,7 @@ public class UserMessageListActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<UserMessageSummary> messageSummaries = dbHelper.getUserMessageSummariesForOwner(ownerId);
+        List<UserMessageSummary> messageSummaries = summaryRepo.getUserMessageSummariesForOwner(ownerId); // Sử dụng repository
 
         // ✅ Gọi đúng constructor với 3 tham số
         adapter = new UserMessageAdapter(messageSummaries, ownerId, userId);
