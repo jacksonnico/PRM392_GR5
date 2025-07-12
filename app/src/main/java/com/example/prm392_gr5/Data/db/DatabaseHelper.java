@@ -26,8 +26,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TBL_PAYMENTS = "payments";
     public static final String TBL_SERVICES = "services";
 
+    private final Context context; // Thêm biến Context
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context; // Lưu Context
     }
 
     @Override
@@ -100,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "('Admin', '0999999999', 'adminpass', 'admin', 1)");
 
         db.execSQL("INSERT INTO " + TBL_OWNERS + " (fullName, phoneNumber, password, role) VALUES " +
-                "('Đỗ Văn Mạnh', '0987654321', 'ownerpass', 'owner')");
+                "('Nguyen Van Chien', '0398263126', '123456', 'owner')");
 
         db.execSQL("INSERT INTO " + TBL_PITCHES + " (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) VALUES " +
                 "(1, 'Sân Bóng Đá Bao Cấp', 500000, 'Hoa Lac Hi-tech Park, Tân Xá, Hà Nội', '0979504194', '06:00', '22:00', 'https://afd.com.vn/images/image/tin/co-san-bong.jpg')," +
@@ -108,11 +111,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "(2, 'Sân Bóng 5 Cửa Ô', 500000, '2GHX+425, Tân Xá, Thạch Thất, Hà Nội', '0979504194', '06:00', '22:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCcMUCBLWw2FVmuRYVJbkQc2TvZ5lVGwTHEQ&s.jpg')");
 
         db.execSQL("INSERT INTO " + TBL_MESSAGES + " (sender, message, time, pitchName, userId) VALUES " +
-                "('1', 'Đặt sân lúc 10h', '12:00, 10/07/2025', 'Sân Bóng Đá Trường Chinh', 1)," +
-                "('0', 'Đã nhận, xác nhận nhé!', '12:01, 10/07/2025', 'Sân Bóng Đá Trường Chinh', 0)");
+                "('1', 'Đặt sân lúc 10h', '12:00, 10/07/2025', 'Sân Bóng Đá Bao Cấp', 1)," +
+                "('0', 'Đã nhận, xác nhận nhé!', '12:01, 10/07/2025', 'Sân Bóng Đá Bao Cấp', 0)");
 
         db.execSQL("INSERT INTO " + TBL_BOOKINGS + " (pitchId, userId, dateTime, status, depositAmount, services) VALUES " +
-                "(1, 1, '2025-07|10T10:00:00', 'confirmed', 200000.0, '')");
+                "(1, 1, '2025-07-10T10:00:00', 'confirmed', 200000.0, '')");
+
+        db.execSQL("INSERT INTO " + TBL_PAYMENTS + " (bookingId, method, amount, status) VALUES " +
+                "(1, 'cash', 500000, 'completed')");
+
+        db.execSQL("INSERT INTO " + TBL_NOTIFICATIONS + " (message, dateTime, receiverId, receiverType) VALUES " +
+                "('Đặt sân thành công', '12:02, 10/07/2025', 1, 'user')," +
+                "('Xác nhận thanh toán', '12:03, 10/07/2025', 1, 'user')");
 
         db.execSQL("INSERT INTO " + TBL_SERVICES + " (pitchId, name, price) VALUES " +
                 "(1, 'Thuê bóng', 50000)," +
@@ -129,155 +139,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Các phương thức còn lại giữ nguyên
-    public String getFullNameFromUserId(int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String fullName = "User_" + userId;
-        Cursor cursor = db.rawQuery("SELECT fullName FROM " + TBL_USERS + " WHERE id = ?", new String[]{String.valueOf(userId)});
-        if (cursor.moveToFirst()) {
-            fullName = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
-        }
-        cursor.close();
-        return fullName;
-    }
-
-    public String getPhoneNumberFromUserId(int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String phone = "";
-        Cursor cursor = db.rawQuery("SELECT phoneNumber FROM " + TBL_USERS + " WHERE id = ?", new String[]{String.valueOf(userId)});
-        if (cursor.moveToFirst()) {
-            phone = cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
-        }
-        cursor.close();
-        return phone;
-    }
-
-    public String getFullNameFromOwnerId(int ownerId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String fullName = "Owner_" + ownerId;
-        Cursor cursor = db.rawQuery("SELECT fullName FROM " + TBL_OWNERS + " WHERE id = ?", new String[]{String.valueOf(ownerId)});
-        if (cursor.moveToFirst()) {
-            fullName = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
-        }
-        cursor.close();
-        return fullName;
-    }
-
-    public void addMessage(Message message) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("sender", String.valueOf(message.getUserId()));
-        values.put("message", message.getMessage());
-        values.put("time", message.getTime());
-        values.put("pitchName", message.getPitchName());
-        values.put("userId", message.getUserId());
-        db.insert(TBL_MESSAGES, null, values);
-        db.close();
-    }
-
-    public List<Message> getMessagesByPitch(String pitchName) {
-        List<Message> messages = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TBL_MESSAGES + " WHERE pitchName = ? ORDER BY id ASC", new String[]{pitchName});
-        while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-            String msg = cursor.getString(cursor.getColumnIndexOrThrow("message"));
-            String time = cursor.getString(cursor.getColumnIndexOrThrow("time"));
-            int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
-            String displayName = userId == 0 ? getFullNameFromOwnerId(2) : getFullNameFromUserId(userId);
-            messages.add(new Message(id, displayName, msg, time, pitchName, userId));
-        }
-        cursor.close();
-        db.close();
-        return messages;
-    }
-
-    public String getUserNameAndPhone(int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String result = "";
-        Cursor cursor = db.rawQuery("SELECT fullName, phoneNumber FROM users WHERE id = ?", new String[]{String.valueOf(userId)});
-        if (cursor.moveToFirst()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
-            result = name + " - " + phone;
-        }
-        cursor.close();
-        return result;
-    }
-
-    public void addNotification(String message, String dateTime, int receiverId, String receiverType) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("message", message);
-        values.put("dateTime", dateTime);
-        values.put("receiverId", receiverId);
-        values.put("receiverType", receiverType);
-        db.insert(TBL_NOTIFICATIONS, null, values);
-        db.close();
-    }
-
-    public List<Notification> getNotifications(int receiverId, String receiverType) {
-        List<Notification> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM notifications WHERE receiverId = ? AND receiverType = ? ORDER BY id DESC",
-                new String[]{String.valueOf(receiverId), receiverType});
-        while (cursor.moveToNext()) {
-            int id = cursor.getInt(0);
-            String msg = cursor.getString(1);
-            String time = cursor.getString(2);
-            list.add(new Notification(id, msg, time, receiverId, receiverType));
-        }
-        cursor.close();
-        db.close();
-        return list;
-    }
-
-    public List<Notification> getNotificationsForOwner() {
-        List<Notification> list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "SELECT n.*, u.fullName AS userName FROM notifications n " +
-                "JOIN users u ON n.receiverId = u.id " +
-                "WHERE n.receiverType = 'user' ORDER BY n.id DESC";
-
-        Cursor cursor = db.rawQuery(query, null);
-        while (cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-            String message = cursor.getString(cursor.getColumnIndexOrThrow("message"));
-            String dateTime = cursor.getString(cursor.getColumnIndexOrThrow("dateTime"));
-            String userName = cursor.getString(cursor.getColumnIndexOrThrow("userName"));
-
-            Notification notification = new Notification(id, message, dateTime, 0, "user");
-            notification.setUserName(userName);
-            list.add(notification);
-        }
-        cursor.close();
-        db.close();
-        return list;
-    }
-
-    public List<UserMessageSummary> getUserMessageSummariesForOwner(int ownerId) {
-        List<UserMessageSummary> summaries = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor pitchCursor = db.rawQuery("SELECT name FROM " + TBL_PITCHES + " WHERE ownerId = ?", new String[]{String.valueOf(ownerId)});
-        if (pitchCursor.moveToFirst()) {
-            do {
-                String pitchName = pitchCursor.getString(pitchCursor.getColumnIndexOrThrow("name"));
-                Cursor messageCursor = db.rawQuery("SELECT sender, message, time, userId FROM " + TBL_MESSAGES + " WHERE pitchName = ? ORDER BY id DESC LIMIT 1", new String[]{pitchName});
-                if (messageCursor.moveToFirst()) {
-                    int userId = messageCursor.getInt(messageCursor.getColumnIndexOrThrow("userId"));
-                    String lastMessage = messageCursor.getString(messageCursor.getColumnIndexOrThrow("message"));
-                    String lastTime = messageCursor.getString(messageCursor.getColumnIndexOrThrow("time"));
-                    String displayName = getFullNameFromUserId(userId);
-                    String phone = getPhoneNumberFromUserId(userId);
-                    summaries.add(new UserMessageSummary(displayName, lastMessage, lastTime, pitchName, phone));
-                }
-                messageCursor.close();
-            } while (pitchCursor.moveToNext());
-        }
-        pitchCursor.close();
-        db.close();
-        return summaries;
+    // Thêm phương thức getContext
+    public Context getContext() {
+        return context;
     }
 }
