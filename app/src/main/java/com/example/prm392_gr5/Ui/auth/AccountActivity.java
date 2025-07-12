@@ -83,7 +83,12 @@ public class AccountActivity extends Activity {
                     .setMessage("Bạn có chắc muốn đăng xuất không?")
                     .setPositiveButton("Đăng xuất", (dialog, which) -> {
                         SharedPreferencesHelper.clear(this);
-                        startActivity(new Intent(this, LoginActivity.class));
+                        // Quay về LoginActivity và xóa tất cả Activity trong back stack
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa các Activity trước đó
+                        startActivity(intent);
+
+                        // Đảm bảo người dùng không quay lại màn hình tài khoản
                         finish();
                     })
                     .setNegativeButton("Hủy", null)
