@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Nhắn tin với người dùng"
+            android:text="Nhắn tin"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:maxLines="1"
@@ -45,7 +45,7 @@ android:layout_width="match_parent"
 android:layout_height="0dp"
 android:layout_weight="1"
 android:padding="8dp"
-tools:listitem="@layout/item_message" />
+tools:listitem="@layout/item_message_owner" />
 
 <LinearLayout
 android:layout_width="match_parent"

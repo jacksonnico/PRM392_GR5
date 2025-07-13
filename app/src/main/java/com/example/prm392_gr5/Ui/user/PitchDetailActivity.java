@@ -7,20 +7,18 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.Data.model.Pitch;
+import com.example.prm392_gr5.Data.repository.NotificationManagerRepository;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
+import com.example.prm392_gr5.Data.repository.UserProfileRepository;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.booking.BookingActivity;
 import com.example.prm392_gr5.Ui.user.UserMessagesActivity;
 import com.google.android.material.appbar.MaterialToolbar;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,7 +30,8 @@ public class PitchDetailActivity extends AppCompatActivity {
 
     private Pitch p;
     private int userId;
-    private DatabaseHelper dbHelper;
+    private PitchRepository pitchRepo;
+    private UserProfileRepository userProfileRepo; // Thêm repository cho người dùng
 
     private String pitchName;
     private String currentTime;
@@ -44,7 +43,8 @@ public class PitchDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pitch_detail);
 
-        dbHelper = new DatabaseHelper(this);
+        pitchRepo = new PitchRepository(this); // Khởi tạo PitchRepository
+        userProfileRepo = new UserProfileRepository(this); // Khởi tạo UserProfileRepository
 
         int pitchId = getIntent().getIntExtra("pitchId", -1);
         userId = getIntent().getIntExtra("userId", -1);
@@ -58,7 +58,7 @@ public class PitchDetailActivity extends AppCompatActivity {
             }
         }
 
-        p = new PitchRepository(this).getPitchById(pitchId);
+        p = pitchRepo.getPitchById(pitchId); // Sử dụng PitchRepository
         if (p == null) {
             finish();
             return;
@@ -67,7 +67,7 @@ public class PitchDetailActivity extends AppCompatActivity {
         // ⚠️ Phải gán các biến này sau khi đã có pitch p
         pitchName = p.getName();
         currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        userName = dbHelper.getFullNameFromUserId(userId);
+        userName = userProfileRepo.getFullNameFromUserId(userId); // Sử dụng UserProfileRepository
         ownerId = p.getOwnerId();
 
         // 1. Gán View
@@ -103,7 +103,6 @@ public class PitchDetailActivity extends AppCompatActivity {
             String phoneNumber = p.getPhoneNumber();
             if (phoneNumber != null && !phoneNumber.isEmpty()) {
                 try {
-                    // Create intent to make phone call
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
                     callIntent.setData(Uri.parse("tel:" + phoneNumber));
                     startActivity(callIntent);
@@ -129,7 +128,6 @@ public class PitchDetailActivity extends AppCompatActivity {
         });
 
         // 4. Toolbar back
-
         // 8. Setup toolbar
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -142,9 +140,10 @@ public class PitchDetailActivity extends AppCompatActivity {
             intent.putExtra("pitchId", p.getId());
             startActivity(intent);
 
-            // Gửi thông báo
-            dbHelper.addNotification("Đặt sân thành công: " + pitchName, currentTime, userId, "user");
-            dbHelper.addNotification("Người dùng " + userName + " đã đặt sân: " + pitchName, currentTime, ownerId, "owner");
+            // Gửi thông báo (cần NotificationManagerRepository)
+            NotificationManagerRepository notificationRepo = new NotificationManagerRepository(this);
+            notificationRepo.addNotification("Đặt sân thành công: " + pitchName, currentTime, userId, "user");
+            notificationRepo.addNotification("Người dùng " + userName + " đã đặt sân: " + pitchName, currentTime, ownerId, "owner");
         });
 
         // 6. Nhắn tin
