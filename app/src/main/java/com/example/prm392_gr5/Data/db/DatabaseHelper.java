@@ -1,17 +1,11 @@
 package com.example.prm392_gr5.Data.db;
 
-import android.content.ContentValues;
+
 import android.content.Context;
-import android.database.Cursor;
+
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.prm392_gr5.Data.model.Message;
-import com.example.prm392_gr5.Data.model.Notification;
-import com.example.prm392_gr5.Data.model.UserMessageSummary;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PitchBooking.db";
@@ -27,11 +21,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TBL_SERVICES = "services";
     //
 
-    private final Context context; // Thêm biến Context
+    private final Context context;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context; // Lưu Context
+        this.context = context;
     }
 
     @Override
