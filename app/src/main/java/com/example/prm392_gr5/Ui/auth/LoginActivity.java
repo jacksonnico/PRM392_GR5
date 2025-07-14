@@ -53,6 +53,8 @@ public class LoginActivity extends Activity {
         tvForgotPassword.setOnClickListener(v -> {
             startActivity(new Intent(this, ForgotPasswordActivity.class));
         });
+
+
     }
 
     private void mappingViews() {
@@ -111,10 +113,7 @@ public class LoginActivity extends Activity {
                     SharedPreferencesHelper.clear(this);
                 }
 
-                // Lưu userId cùng với thông tin khác
                 SharedPreferencesHelper.saveUserInfo(this, user.getFullName(), user.getPhoneNumber(), user.getRole());
-                SharedPreferencesHelper.saveUserId(this, user.getId()); // Lưu userId
-
                 showToast("Đăng nhập thành công");
 
                 // Điều hướng theo role
