@@ -89,7 +89,7 @@ public class ManagePitchActivity extends AppCompatActivity {
                 int itemId = item.getItemId();
 
                 if (itemId == R.id.nav_pitches) {
-                    // Đang ở màn hình này, không làm gì cả
+
                     return true;
 
                 } else if (itemId == R.id.nav_dashboard) {

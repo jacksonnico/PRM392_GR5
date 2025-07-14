@@ -68,7 +68,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:text="Thêm cơ sở"
-        android:backgroundTint="#FF0057"
+        android:backgroundTint="#004A94"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         android:paddingVertical="12dp"
