@@ -11,8 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_gr5.Data.adapter.MessageAdapter;
-import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.Data.model.Message;
+import com.example.prm392_gr5.Data.repository.ChatMessageRepository;
+import com.example.prm392_gr5.Data.repository.PitchOwnerProfileRepository;
+import com.example.prm392_gr5.Data.repository.PitchRepository;
+import com.example.prm392_gr5.Data.repository.UserProfileRepository;
 import com.example.prm392_gr5.R;
 
 import java.text.SimpleDateFormat;
@@ -25,10 +28,11 @@ public class UserMessagesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
     private List<Message> messages = new ArrayList<>();
-    private DatabaseHelper dbHelper;
+    private ChatMessageRepository messageRepo;
+
     private String pitchName;
     private String phoneNumber;
-    private int userId; // ✅ userId thực sự
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,11 @@ public class UserMessagesActivity extends AppCompatActivity {
         EditText editTextMessage = findViewById(R.id.editTextMessage);
         TextView tvPitchInfo = findViewById(R.id.tvPitchInfo);
 
-        dbHelper = new DatabaseHelper(this);
+        messageRepo = new ChatMessageRepository(this);
 
-        // ✅ Lấy thông tin từ intent
         pitchName = getIntent().getStringExtra("pitchName");
         phoneNumber = getIntent().getStringExtra("phoneNumber");
-        userId = getIntent().getIntExtra("userId", -1); // default -1 nếu chưa có
-        Log.d("UserMessagesActivity", "userId nhận vào: " + userId);
+        userId = getIntent().getIntExtra("userId", -1);
 
         if (pitchName != null && phoneNumber != null) {
             tvPitchInfo.setText("Nhắn tin với: " + pitchName + " (" + phoneNumber + ")");
@@ -54,30 +56,45 @@ public class UserMessagesActivity extends AppCompatActivity {
             tvPitchInfo.setText("Không tìm thấy thông tin sân");
         }
 
-        // ✅ Setup RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        messages = dbHelper.getMessagesByPitch(pitchName);
+        messages = messageRepo.getMessagesByPitch(pitchName);
         adapter = new MessageAdapter(messages);
         recyclerView.setAdapter(adapter);
 
         btnSend.setOnClickListener(v -> {
             String messageText = editTextMessage.getText().toString().trim();
-            Log.d("UserMessagesActivity", "Sending message - text: " + messageText + ", pitchName: " + pitchName + ", userId: " + userId);
             if (!messageText.isEmpty() && pitchName != null && userId != -1) {
-                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm, dd/MM/yyyy");
-                String currentTime = sdf.format(new Date());
-                Message newMessage = new Message(0, "", messageText, currentTime, pitchName, userId);
-                dbHelper.addMessage(newMessage);
-                Message reply = new Message(0, "", "Đã nhận, tôi sẽ liên hệ lại!", currentTime, pitchName, 0);
-                dbHelper.addMessage(reply);
+                String currentTime = new SimpleDateFormat("HH:mm, dd/MM/yyyy").format(new Date());
+
+                // ✅ Lấy tên user cố định
+                String userName = new UserProfileRepository(this).getFullNameFromUserId(userId);
+
+                Message newMessage = new Message(0, userName, messageText, currentTime, pitchName, userId);
+                messageRepo.addMessage(newMessage);
+
+                // ✅ Gửi auto-reply 1 lần duy nhất nếu chưa có
+                if (!hasAutoReply(messages)) {
+                    String pitchDisplayName = pitchName;
+                    Message reply = new Message(0, pitchDisplayName, "Đã nhận, tôi sẽ liên hệ lại!", currentTime, pitchName, 0);
+                    messageRepo.addMessage(reply);
+                }
+
                 messages.clear();
-                messages.addAll(dbHelper.getMessagesByPitch(pitchName)); // Đồng bộ từ database
+                messages.addAll(messageRepo.getMessagesByPitch(pitchName));
                 adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(messages.size() - 1);
                 editTextMessage.setText("");
-            } else {
-                Log.e("UserMessagesActivity", "Cannot send: messageText=" + messageText + ", pitchName=" + pitchName + ", userId=" + userId);
             }
         });
+    }
+
+    // ✅ Check auto-reply
+    private boolean hasAutoReply(List<Message> messages) {
+        for (Message msg : messages) {
+            if (msg.getMessage().equals("Đã nhận, tôi sẽ liên hệ lại!")) {
+                return true;
+            }
+        }
+        return false;
     }
 }
