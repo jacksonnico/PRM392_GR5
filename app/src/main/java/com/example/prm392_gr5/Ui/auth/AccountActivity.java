@@ -121,19 +121,39 @@ public class AccountActivity extends Activity {
 
     private void setupFooterNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
+            String userRole = SharedPreferencesHelper.getRole(this);
+            // Điều hướng theo role
+            Intent intent;
+            switch (userRole) {
+                case "admin":
+                    intent = new Intent(this, AdminMainActivity.class);
+                    break;
+                case "owner":
+                    intent = new Intent(this, ManagePitchActivity.class);  // Điều hướng đến màn hình quản lý sân của owner
+                    break;
+                case "user":
+                default:
+                    intent = new Intent(this, HomeActivity.class);  // Điều hướng đến màn hình chính của user
+                    break;
+            }
+
+            startActivity(intent);
             finish();
         });
+
         navFavorite.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show()
         );
+
         navNotify.setOnClickListener(v -> {
             startActivity(new Intent(this, NotificationActivity.class));
         });
+
         navAccount.setOnClickListener(v ->
                 Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show()
         );
     }
+
 //    private void setupFooterNavigation() {
 //        navHome.setOnClickListener(v -> {
 //            // Lấy thông tin user hiện tại từ SharedPreferences hoặc session
