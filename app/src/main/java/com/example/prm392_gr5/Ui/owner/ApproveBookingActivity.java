@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_gr5.Data.model.Booking;
+import com.example.prm392_gr5.Data.model.Pitch;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Data.repository.BookingRepository;
 import com.example.prm392_gr5.Data.model.BookingInfo;
@@ -39,14 +40,16 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
         initViews();
         loadPendingBookings();
     }
+
     @Override
     public void onStatusChanged() {
-
-        pitchSchedule.loadSchedule();
+        if (pitchSchedule != null) {
+            pitchSchedule.loadSchedule();
+        }
     }
+
     private void initViews() {
         recyclerView = findViewById(R.id.recycler_bookings);
-
         bookingList = new ArrayList<>();
         adapter = new BookingAdapter(bookingList, this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -55,17 +58,18 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
 
     private void loadPendingBookings() {
         bookingList.clear();
-
-        // Lấy danh sách Booking từ Repository
         List<Booking> bookings = bookingRepository.getPendingBookings(ownerId);
 
-        // Chuyển sang BookingInfo
         for (Booking b : bookings) {
-            bookingList.add(new BookingInfo(b));
+            Pitch pitch = bookingRepository.getPitchById(b.getPitchId());
+            if (pitch != null) {
+                bookingList.add(new BookingInfo(b, pitch));
+            }
         }
 
         adapter.updateBookings(bookingList);
     }
+
 
     private void updateBookingStatus(int bookingId, String status) {
         boolean success = bookingRepository.updateBookingStatus(bookingId, status);
@@ -88,49 +92,29 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
         TextView tvDeposit = dialogView.findViewById(R.id.tv_deposit);
 
         tvUserName.setText(booking.userName);
-        tvUserPhone.setText(booking.userPhone);
+        tvUserPhone.setText(booking.userPhone != null ? booking.userPhone : "–");
         tvPitchName.setText(booking.pitchName);
         tvDateTime.setText(formatDateTime(booking.dateTime));
         tvServices.setText(getServicesText(booking.services, booking.pitchId));
-        tvDeposit.setText(String.format("%.0f VNĐ", booking.depositAmount));
+//        tvDeposit.setText(String.format(Locale.getDefault(), "%,.0f VNĐ", booking.depositAmount));
 
         new AlertDialog.Builder(this)
                 .setTitle("Chi tiết booking")
                 .setView(dialogView)
-                .setPositiveButton("Duyệt", (dialog, which) -> {
-                    updateBookingStatus(booking.id, "approved");
-                })
-                .setNegativeButton("Từ chối", (dialog, which) -> {
-                    updateBookingStatus(booking.id, "rejected");
-                })
+                .setPositiveButton("Duyệt", (dialog, which) -> updateBookingStatus(booking.id, "approved"))
+                .setNegativeButton("Từ chối", (dialog, which) -> updateBookingStatus(booking.id, "rejected"))
                 .setNeutralButton("Đóng", null)
                 .show();
     }
 
     private String formatDateTime(String dateTime) {
-        if (dateTime == null || dateTime.isEmpty()) {
-            return "Chưa có thời gian";
-        }
-
+        if (dateTime == null || dateTime.isEmpty()) return "Chưa có thời gian";
         try {
-
-            System.out.println("Input dateTime: " + dateTime);
-
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
-
             Date date = inputFormat.parse(dateTime);
-            if (date != null) {
-                String result = outputFormat.format(date);
-                System.out.println("Formatted result: " + result);
-                return result;
-            } else {
-                System.out.println("Parse returned null");
-                return dateTime;
-            }
-
+            return date != null ? outputFormat.format(date) : dateTime;
         } catch (Exception e) {
-            System.out.println("Parse error: " + e.getMessage());
             e.printStackTrace();
             return dateTime;
         }
@@ -140,7 +124,6 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
         return bookingRepository.getServiceText(servicesJson);
     }
 
-    // Implement interface methods
     @Override
     public void onApproveClick(int bookingId) {
         updateBookingStatus(bookingId, "approved");

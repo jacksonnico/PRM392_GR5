@@ -2,37 +2,52 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.prm392_gr5">
 
+    <!-- Quyền truy cập -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
+    <!-- Queries cho Google Maps -->
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:icon="@mipmap/pitch24h"
+        android:roundIcon="@mipmap/pitch24h_round"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.PRM392_GR5">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC8WRHTnpYr5-LW1l94s8f_jrdpDDVXYfM" />
+
         <!-- User Flow -->
         <activity
             android:name=".Ui.user.PitchDetailActivity"
             android:exported="false"
             android:label="Chi tiết sân" />
-        <!--Owner -->
-        <activity android:name=".Ui.owner.EditPitchActivity" />
-        <activity android:name=".Ui.owner.AddPitchActivity" />
-        <activity android:name=".Ui.owner.OwnerDashboardActivity" />
-        <activity android:name=".Ui.owner.PitchScheduleActivity" />
-        <activity android:name=".Ui.owner.ApproveBookingActivity" />
-        <activity android:name=".Ui.owner.ManageServicesActivity"/>
-        <activity android:name=".Ui.owner.MapPickerActivity" />
-        <activity android:name=".Ui.owner.ManagePitchActivity"/>
+        <activity
+            android:name=".Ui.user.UserMessagesActivity"
+            android:exported="false"
+            android:label="Tin nhắn" />
+
+        <!-- Owner -->
+        <activity android:name=".Ui.owner.OwnerNotificationActivity" />
+        <activity android:name=".Ui.owner.EditPitchActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.AddPitchActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.OwnerDashboardActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.PitchScheduleActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.ApproveBookingActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.ManageServicesActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.MapPickerActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.ManagePitchActivity" android:exported="false" />
+        <activity android:name=".Ui.owner.UserMessageListActivity" android:exported="false" android:label="Danh sách Tin nhắn" />
+
         <!-- Booking -->
         <activity
             android:name=".Ui.booking.BookingActivity"
@@ -45,6 +60,11 @@
         <activity
             android:name=".Ui.booking.BookingHistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".Ui.PitchOwnerMessagesActivity"
+        android:exported="false"
+        android:label="Tin nhắn với chủ sân" />
+        <activity android:name=".Ui.user.NotificationActivity" />
 
         <!-- Authentication -->
         <activity
@@ -55,27 +75,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Ui.auth.OtpActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.ForgotPasswordActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.OtpForgotActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.HomeActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.AccountActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.AccountInfoActivity" android:exported="true" />
-        <activity android:name=".Ui.auth.ChangePasswordActivity" android:exported="true" />
+        <activity android:name=".Ui.auth.OtpActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.ForgotPasswordActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.OtpForgotActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.HomeActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.AccountActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.AccountInfoActivity" android:exported="false" />
+        <activity android:name=".Ui.auth.ChangePasswordActivity" android:exported="false" />
 
         <!-- Admin Dashboard -->
-        <activity android:name=".Ui.admin.AdminMainActivity" />
-        <activity android:name=".Ui.admin.AdminDashboardActivity" />
-        <activity android:name=".Ui.admin.AdminStatisticsActivity" />
-        <activity android:name=".Ui.admin.ManageUsersActivity" />
-        <activity android:name=".Ui.admin.AddEditUserActivity" />
-        <activity android:name=".Ui.admin.ManageOwnersActivity" />
-        <activity android:name=".Ui.admin.AddEditOwnerActivity" />
-        <activity android:name=".Ui.admin.ManageOwnerPitchesActivity" />
-        <activity android:name=".Ui.admin.AddEditPitchActivity" />
-        <activity android:name=".Ui.admin.ManageBookingsActivity" />
-        <activity android:name=".Ui.admin.BookingDetailActivity" />
-        <activity android:name=".Ui.admin.ViewBookingsActivity" />
+        <activity android:name=".Ui.admin.AdminMainActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.AdminStatisticsActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.ManageUsersActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.AddEditUserActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.ManageOwnersActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.AddEditOwnerActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.ManageOwnerPitchesActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.AddEditPitchActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.ManageBookingsActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.BookingDetailActivity" android:exported="false" />
+        <activity android:name=".Ui.admin.ViewBookingsActivity" android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />

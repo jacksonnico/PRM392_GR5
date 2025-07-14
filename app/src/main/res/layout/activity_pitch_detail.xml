@@ -15,6 +15,7 @@
         app:title="Chi tiết sân"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:titleTextColor="@color/black"/>
+
     <!-- 1. Ảnh full-width, không padding -->
     <ImageView
         android:id="@+id/ivPitchImage"
@@ -53,15 +54,28 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:layout_marginBottom="12dp"
-                android:text="Địa chỉ" />
+                android:text="Địa chỉ"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical" />
 
+            <!-- Clickable Phone Number -->
             <TextView
                 android:id="@+id/tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:layout_marginBottom="12dp"
-                android:text="SĐT" />
+                android:text="SĐT"
+                android:textColor="#0D47A1"
+                android:textStyle="bold"
+                android:drawableLeft="@drawable/ic_phone"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp" />
 
             <TextView
                 android:id="@+id/tvPrice"
@@ -69,7 +83,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:layout_marginBottom="12dp"
-                android:text="Giá sân" />
+                android:text="Giá sân"
+                android:textColor="#E53935"
+                android:textStyle="bold"
+                android:drawableLeft="@drawable/ic_money"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical" />
 
             <TextView
                 android:id="@+id/tvOpenClose"
@@ -77,7 +96,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:layout_marginBottom="12dp"
-                android:text="Giờ mở cửa" />
+                android:text="Giờ mở cửa"
+                android:drawableLeft="@drawable/ic_time"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -108,18 +130,46 @@
                     android:paddingBottom="8dp"/>
             </LinearLayout>
 
+            <!-- Instructions for phone number -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="💡 Nhấn vào số điện thoại để gọi trực tiếp"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:textColor="#666"
+                android:alpha="0.8" />
+
         </LinearLayout>
     </ScrollView>
 
-    <!-- 3. Nút Đặt sân cố định dưới cùng -->
-    <Button
-        android:id="@+id/btnBook"
+    <!-- 3. Hai nút Đặt sân và Nhắn tin cố định dưới cùng -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#0D47A1"
-        android:text="Đặt sân"
-        android:layout_margin="16dp" />
+        android:orientation="horizontal"
+        android:padding="8dp">
 
+        <Button
+            android:id="@+id/btnMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nhắn tin"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#1976D2"
+            android:layout_marginEnd="8dp" />
 
+        <Button
+            android:id="@+id/btnBook"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#0D47A1"
+            android:text="Đặt sân"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,13 +15,27 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <!-- Total Amount Display -->
+    <TextView
+        android:id="@+id/tvTotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Tổng tiền: 0 VND"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#E53935"
+
+        android:padding="12dp" />
+
     <!-- QR image -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="275dp"
         android:layout_height="237dp"
         android:layout_marginBottom="16dp"
-        android:contentDescription="QR Code" />
+        android:contentDescription="QR Code"
+        android:scaleType="centerCrop" />
 
     <!-- Account info -->
     <TextView
@@ -31,14 +44,35 @@
         android:layout_height="wrap_content"
         android:text="NGUYEN XUAN CHIEN"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:id="@+id/tvAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="3950175888" />
+        android:text="3950175888"
+        android:textSize="14sp" />
+
+    <!-- Bank name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="BIDV"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- Payment instructions -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Quét mã QR hoặc chuyển khoản theo thông tin trên"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:gravity="center" />
 
     <!-- Xác nhận thanh toán -->
     <Button
@@ -47,6 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:backgroundTint="#0D47A1"
-        android:text="Xác nhận" />
+        android:text="Xác nhận thanh toán"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

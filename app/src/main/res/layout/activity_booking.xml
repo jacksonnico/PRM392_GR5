@@ -3,21 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <!-- AppBar -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:elevation="4dp">
 
-        <!-- Dùng Toolbar của AppCompat -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/background_light"
+            android:background="?attr/colorPrimary"
             android:title="Đặt sân"
-            android:titleTextColor="@color/black"
+            android:titleTextColor="@android:color/white"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
@@ -33,14 +34,15 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <!-- Chọn ngày -->
             <TextView
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chọn ngày (một hoặc nhiều ngày)"/>
+                android:text="Chọn ngày (một hoặc nhiều ngày)"
+                android:textStyle="bold"/>
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
@@ -51,17 +53,16 @@
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:divider="?attr/dividerVertical"
                     android:showDividers="middle"/>
             </HorizontalScrollView>
 
-            <!-- CheckBox lặp -->
+            <!-- Checkbox lặp -->
             <CheckBox
                 android:id="@+id/cbRepeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lặp lại hàng tuần"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="12dp"/>
 
             <!-- Sân đã chọn -->
             <TextView
@@ -69,41 +70,66 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Sân đã chọn"
-                android:layout_marginTop="16dp"/>
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"/>
 
             <TextView
                 android:id="@+id/tvSelectedPitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="#0D47A1"
                 android:textStyle="bold"
                 android:textSize="18sp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"/>
+                android:paddingVertical="8dp"
+                android:background="#E3F2FD"
+                android:paddingHorizontal="12dp"
+                android:layout_marginTop="4dp"
+                android:backgroundTintMode="src_in"/>
 
-            <!-- Chọn giờ -->
+            <!-- Chọn khung giờ -->
             <TextView
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Chọn khung giờ"
-                android:layout_marginTop="16dp"/>
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"/>
 
             <Spinner
                 android:id="@+id/spinnerTimeSlot"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"/>
+
+            <!-- Dịch vụ -->
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chọn dịch vụ"
+                android:textStyle="bold"
+                android:layout_marginTop="20dp"/>
+
+            <LinearLayout
+                android:id="@+id/llServices"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
 
             <!-- Nút Đặt sân -->
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnBookNow"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#0D47A1"
-                android:textColor="#FFFFFF"
+                android:layout_height="wrap_content"
                 android:text="Đặt sân ngay"
-                android:enabled="false"/>
+                android:enabled="false"
+                android:layout_marginTop="32dp"
+                app:cornerRadius="12dp"
+                app:iconPadding="8dp"
+                app:iconTint="@android:color/white"
+                app:backgroundTint="@color/colorPrimary"
+                android:textColor="@android:color/white"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

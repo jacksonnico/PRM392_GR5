@@ -443,7 +443,25 @@ public class PitchRepository {
         }
         return timeSlots;
     }
-
+    public int getOwnerIdFromPitchName(String pitchName) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(
+                    "SELECT ownerId FROM " + DatabaseHelper.TBL_PITCHES + " WHERE name = ?",
+                    new String[]{pitchName}
+            );
+            if (cursor.moveToFirst()) {
+                return cursor.getInt(cursor.getColumnIndexOrThrow("ownerId"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) cursor.close();
+            db.close();
+        }
+        return -1; // ❌ Không tìm thấy
+    }
 
     private Pitch extractPitchFromCursor(Cursor c) {
         Pitch p = new Pitch();

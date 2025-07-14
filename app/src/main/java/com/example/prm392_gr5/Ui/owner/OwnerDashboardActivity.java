@@ -3,18 +3,22 @@ package com.example.prm392_gr5.Ui.owner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
-import com.example.prm392_gr5.Data.repository.OwnerDashboardRepository;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
+import com.example.prm392_gr5.Data.repository.OwnerDashboardRepository;
 import com.example.prm392_gr5.R;
 
 public class OwnerDashboardActivity extends AppCompatActivity {
+
     private OwnerDashboardRepository dashboardRepo;
     private DatabaseHelper dbHelper;
     private TextView tvTotalPitches, tvTotalBookings, tvPendingBookings, tvTotalRevenue;
-    private CardView cardManagePitches, cardApproveBookings, cardPitchSchedule, cardAddServices, cardStats;
+    private CardView cardManagePitches, cardApproveBookings, cardPitchSchedule, cardAddServices, cardMessages;
     private int ownerId;
+    private int userId; // ✅ Thêm biến userId
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +26,11 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_owner_dashboard);
 
         dashboardRepo = new OwnerDashboardRepository(this);
-        ownerId = 2;
+        dbHelper = new DatabaseHelper(this);
+
+        // ✅ Lấy ownerId từ Intent hoặc dùng mặc định
+        ownerId = getIntent().getIntExtra("ownerId", 2);
+        userId = ownerId; // ✅ Vì đây là chủ sân → userId = ownerId
 
         initViews();
         loadDashboardData();
@@ -40,19 +48,18 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         tvTotalBookings = findViewById(R.id.tv_total_bookings);
         tvPendingBookings = findViewById(R.id.tv_pending_bookings);
 
-
         cardManagePitches = findViewById(R.id.card_manage_pitches);
         cardApproveBookings = findViewById(R.id.card_approve_bookings);
         cardPitchSchedule = findViewById(R.id.card_pitch_schedule);
         cardAddServices = findViewById(R.id.card_add_services);
-
+        cardMessages = findViewById(R.id.card_messages);
     }
 
     private void loadDashboardData() {
         tvTotalPitches.setText(String.valueOf(dashboardRepo.getTotalPitches(ownerId)));
         tvTotalBookings.setText(String.valueOf(dashboardRepo.getTotalBookings(ownerId)));
         tvPendingBookings.setText(String.valueOf(dashboardRepo.getPendingBookings(ownerId)));
-
+        // tvTotalRevenue.setText(...) nếu bạn có
     }
 
     private void setClickListeners() {
@@ -80,5 +87,12 @@ public class OwnerDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // ✅ Gửi ownerId và userId khi mở UserMessageListActivity
+        cardMessages.setOnClickListener(v -> {
+            Intent intent = new Intent(this, UserMessageListActivity.class);
+            intent.putExtra("ownerId", ownerId);
+            intent.putExtra("userId", userId); // ✅ Đã thêm
+            startActivity(intent);
+        });
     }
 }

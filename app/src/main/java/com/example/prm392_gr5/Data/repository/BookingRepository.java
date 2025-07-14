@@ -8,6 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.Data.model.Booking;
 import com.example.prm392_gr5.Data.model.Payment;
+import com.example.prm392_gr5.Data.model.Pitch;
+import com.example.prm392_gr5.Data.model.Service;
+
+import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,13 +32,14 @@ public class BookingRepository {
         cv.put("userId", b.getUserId());
         cv.put("pitchId", b.getPitchId());
         cv.put("dateTime", b.getDateTime());
+        cv.put("timeSlot", b.getTimeSlot());
         cv.put("services", b.getServices());
-        cv.put("depositAmount", b.getDepositAmount());
         cv.put("status", b.getStatus());
         long id = db.insert("bookings", null, cv);
         db.close();
         return id;
     }
+
 
     // Lấy tất cả booking của 1 user, sắp xếp theo dateTime DESC
     public List<Booking> getBookingsByUser(int userId) {
@@ -54,7 +59,7 @@ public class BookingRepository {
             b.setPitchId(c.getInt(c.getColumnIndexOrThrow("pitchId")));
             b.setDateTime(c.getString(c.getColumnIndexOrThrow("dateTime")));
             b.setServices(c.getString(c.getColumnIndexOrThrow("services")));
-            b.setDepositAmount(c.getDouble(c.getColumnIndexOrThrow("depositAmount")));
+            b.setTimeSlot(c.getString(c.getColumnIndexOrThrow("timeSlot")));
             b.setStatus(c.getString(c.getColumnIndexOrThrow("status")));
             list.add(b);
         }
@@ -109,8 +114,8 @@ public class BookingRepository {
         List<Booking> bookings = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT b.id, b.userId, b.pitchId, b.dateTime, b.services, " +
-                        "b.depositAmount, b.status, p.name AS pitchName, u.fullName AS userName " +
+                "SELECT b.id, b.userId, b.pitchId, b.dateTime, b.timeSlot, b.services, " +
+                        "b.status, p.name AS pitchName, u.fullName AS userName " +
                         "FROM bookings b " +
                         "JOIN pitches p ON b.pitchId = p.id " +
                         "LEFT JOIN users u ON b.userId = u.id " +
@@ -122,16 +127,24 @@ public class BookingRepository {
             int userId = cursor.getInt(cursor.getColumnIndexOrThrow("userId"));
             int pitchId = cursor.getInt(cursor.getColumnIndexOrThrow("pitchId"));
             String dateTime = cursor.getString(cursor.getColumnIndexOrThrow("dateTime"));
+            String timeSlot = cursor.getString(cursor.getColumnIndexOrThrow("timeSlot"));
             String services = cursor.getString(cursor.getColumnIndexOrThrow("services"));
-            double depositAmount = cursor.getDouble(cursor.getColumnIndexOrThrow("depositAmount"));
             String status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
             String pitchName = cursor.getString(cursor.getColumnIndexOrThrow("pitchName"));
             String userName = cursor.getString(cursor.getColumnIndexOrThrow("userName"));
 
             List<String> serviceNames = getServiceNamesByIds(services);
             Booking booking = new Booking(
-                    id, userId, pitchId, dateTime, services,
-                    depositAmount, status, pitchName, userName, serviceNames
+                    id,
+                    userId,
+                    pitchId,
+                    dateTime,
+                    timeSlot,
+                    services,
+                    status,
+                    pitchName,
+                    userName,
+                    serviceNames
             );
             bookings.add(booking);
         }
@@ -139,6 +152,7 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+
 
     // Tìm kiếm booking theo từ khóa trên pitch.name, services, status, user.fullName
     public List<Booking> searchBookings(String keyword) {
@@ -329,7 +343,7 @@ public class BookingRepository {
         b.setPitchId(cursor.getInt(cursor.getColumnIndexOrThrow("pitchId")));
         b.setDateTime(cursor.getString(cursor.getColumnIndexOrThrow("dateTime")));
         b.setServices(cursor.getString(cursor.getColumnIndexOrThrow("services")));
-        b.setDepositAmount(cursor.getDouble(cursor.getColumnIndexOrThrow("depositAmount")));
+        b.setTimeSlot(cursor.getString(cursor.getColumnIndexOrThrow("timeSlot")));
         b.setStatus(cursor.getString(cursor.getColumnIndexOrThrow("status")));
         b.setPitchName(cursor.getString(cursor.getColumnIndexOrThrow("pitchName")));
         int idx = cursor.getColumnIndex("userName");
@@ -365,6 +379,7 @@ public class BookingRepository {
         db.close();
         return names;
     }
+
     public List<Booking> getAllBookingsWithPitchNames() {
         List<Booking> bookings = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -388,6 +403,7 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+
     public List<Booking> getPendingBookings(int ownerId) {
         List<Booking> bookings = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -407,8 +423,136 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+
     public String getServiceText(String servicesJson) {
-        List<String> serviceNames = getServiceNamesByIds(servicesJson);
-        return String.join(", ", serviceNames);
+        List<String> names = new ArrayList<>();
+        try {
+            JSONArray arr = new JSONArray(servicesJson);
+            for (int i = 0; i < arr.length(); i++) {
+                int id = arr.getInt(i);
+                Service s = getServiceById(id);
+                if (s != null) names.add(s.getName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return String.join(", ", names);
+    }
+
+    public Service getServiceById(int id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM services WHERE id = ?", new String[]{String.valueOf(id)});
+        if (cursor.moveToFirst()) {
+            return new Service(
+                    cursor.getInt(cursor.getColumnIndexOrThrow("id")),
+                    cursor.getInt(cursor.getColumnIndexOrThrow("pitchId")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("name")),
+                    cursor.getDouble(cursor.getColumnIndexOrThrow("price"))
+            );
+        }
+        cursor.close();
+        return null;
+    }
+
+    public Pitch getPitchById(int pitchId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM pitches WHERE id = ?", new String[]{String.valueOf(pitchId)});
+        if (c.moveToFirst()) {
+            return new Pitch(
+                    c.getInt(c.getColumnIndexOrThrow("id")),
+                    c.getInt(c.getColumnIndexOrThrow("ownerId")),
+                    c.getString(c.getColumnIndexOrThrow("name")),
+                    c.getDouble(c.getColumnIndexOrThrow("price")),
+                    c.getString(c.getColumnIndexOrThrow("address")),
+                    c.getString(c.getColumnIndexOrThrow("phoneNumber")),
+                    c.getString(c.getColumnIndexOrThrow("openTime")),
+                    c.getString(c.getColumnIndexOrThrow("closeTime")),
+                    c.getString(c.getColumnIndexOrThrow("imageUrl")),
+                    c.getString(c.getColumnIndexOrThrow("status"))
+            );
+        }
+        return null;
+    }
+
+    public double getBookingAmount(int bookingId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        // Query to get booking details with pitch price
+        String query = "SELECT p.price, b.services " +
+                "FROM bookings b " +
+                "JOIN pitches p ON b.pitchId = p.id " +
+                "WHERE b.id = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(bookingId)});
+
+        double totalAmount = 0;
+        if (cursor.moveToFirst()) {
+            double pitchPrice = cursor.getDouble(0);
+            String services = cursor.getString(1);
+
+            totalAmount = pitchPrice;
+            if (services != null && !services.isEmpty()) {
+                totalAmount += getServicesCost(services);
+            }
+        }
+
+        cursor.close();
+        db.close();
+        return totalAmount;
+    }
+
+
+    private double getServicesCost(String servicesString) {
+        if (servicesString == null || servicesString.isEmpty()) {
+            return 0;
+        }
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        double totalServiceCost = 0;
+
+        try {
+            // Nếu services được lưu dưới dạng JSON array: [1,2,3]
+            if (servicesString.startsWith("[") && servicesString.endsWith("]")) {
+                String cleanServices = servicesString.substring(1, servicesString.length() - 1);
+                if (!cleanServices.trim().isEmpty()) {
+                    String[] serviceIds = cleanServices.split(",");
+
+                    for (String serviceId : serviceIds) {
+                        String trimmedId = serviceId.trim();
+                        if (!trimmedId.isEmpty()) {
+                            String query = "SELECT price FROM services WHERE id = ?";
+                            Cursor cursor = db.rawQuery(query, new String[]{trimmedId});
+
+                            if (cursor.moveToFirst()) {
+                                totalServiceCost += cursor.getDouble(0);
+                            }
+                            cursor.close();
+                        }
+                    }
+                }
+            } else {
+                // Nếu services được lưu dưới dạng string thông thường: "1,2,3"
+                String[] serviceIds = servicesString.split(",");
+
+                for (String serviceId : serviceIds) {
+                    String trimmedId = serviceId.trim();
+                    if (!trimmedId.isEmpty()) {
+                        String query = "SELECT price FROM services WHERE id = ?";
+                        Cursor cursor = db.rawQuery(query, new String[]{trimmedId});
+
+                        if (cursor.moveToFirst()) {
+                            totalServiceCost += cursor.getDouble(0);
+                        }
+                        cursor.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+
+        return totalServiceCost;
     }
 }

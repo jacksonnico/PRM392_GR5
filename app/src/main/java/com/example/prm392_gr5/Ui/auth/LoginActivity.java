@@ -122,7 +122,7 @@ public class LoginActivity extends Activity {
                         startActivity(new Intent(this, AdminMainActivity.class));
                         break;
                     case "owner":
-                       startActivity(new Intent(this, ManagePitchActivity.class));
+                        startActivity(new Intent(this, ManagePitchActivity.class));
                         break;
                     case "user":
                     default:
