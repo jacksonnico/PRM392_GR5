@@ -3,13 +3,16 @@ package com.example.prm392_gr5.Ui.auth;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 import com.example.prm392_gr5.R;
+import com.example.prm392_gr5.Ui.admin.AdminMainActivity;
 import com.example.prm392_gr5.Ui.booking.BookingHistoryActivity;
+import com.example.prm392_gr5.Ui.owner.ManagePitchActivity;
 import com.example.prm392_gr5.Ui.user.NotificationActivity;
 
 public class AccountActivity extends Activity {
@@ -83,7 +86,12 @@ public class AccountActivity extends Activity {
                     .setMessage("Bạn có chắc muốn đăng xuất không?")
                     .setPositiveButton("Đăng xuất", (dialog, which) -> {
                         SharedPreferencesHelper.clear(this);
-                        startActivity(new Intent(this, LoginActivity.class));
+                        // Quay về LoginActivity và xóa tất cả Activity trong back stack
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa các Activity trước đó
+                        startActivity(intent);
+
+                        // Đảm bảo người dùng không quay lại màn hình tài khoản
                         finish();
                     })
                     .setNegativeButton("Hủy", null)
@@ -113,17 +121,67 @@ public class AccountActivity extends Activity {
 
     private void setupFooterNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
+            String userRole = SharedPreferencesHelper.getRole(this);
+            // Điều hướng theo role
+            Intent intent;
+            switch (userRole) {
+                case "admin":
+                    intent = new Intent(this, AdminMainActivity.class);
+                    break;
+                case "owner":
+                    intent = new Intent(this, ManagePitchActivity.class);  // Điều hướng đến màn hình quản lý sân của owner
+                    break;
+                case "user":
+                default:
+                    intent = new Intent(this, HomeActivity.class);  // Điều hướng đến màn hình chính của user
+                    break;
+            }
+
+            startActivity(intent);
             finish();
         });
+
         navFavorite.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show()
         );
+
         navNotify.setOnClickListener(v -> {
             startActivity(new Intent(this, NotificationActivity.class));
         });
+
         navAccount.setOnClickListener(v ->
                 Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show()
         );
     }
+
+//    private void setupFooterNavigation() {
+//        navHome.setOnClickListener(v -> {
+//            // Lấy thông tin user hiện tại từ SharedPreferences hoặc session
+//            SharedPreferences sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+//            String userRole = sharedPreferences.getString("userRole", "user");
+//            int userId = sharedPreferences.getInt("userId", -1);
+//
+//            // Điều hướng theo role
+//            Intent intent;
+//            switch (userRole) {
+//                case "admin":
+//                    intent = new Intent(this, AdminMainActivity.class);
+//                    break;
+//                case "owner":
+//                    intent = new Intent(this, ManagePitchActivity.class);
+//                    break;
+//                case "user":
+//                default:
+//                    intent = new Intent(this, HomeActivity.class);
+//                    break;
+//            }
+//
+//            // Truyền thông tin user nếu cần
+//            intent.putExtra("userId", userId);
+//            intent.putExtra("userRole", userRole);
+//
+//            startActivity(intent);
+//            finish();
+//        });
+//    }
 }

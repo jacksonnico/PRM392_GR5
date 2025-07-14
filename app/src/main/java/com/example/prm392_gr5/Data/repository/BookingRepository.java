@@ -379,6 +379,7 @@ public class BookingRepository {
         db.close();
         return names;
     }
+
     public List<Booking> getAllBookingsWithPitchNames() {
         List<Booking> bookings = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -402,6 +403,7 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+
     public List<Booking> getPendingBookings(int ownerId) {
         List<Booking> bookings = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -421,6 +423,7 @@ public class BookingRepository {
         db.close();
         return bookings;
     }
+
     public String getServiceText(String servicesJson) {
         List<String> names = new ArrayList<>();
         try {
@@ -435,6 +438,7 @@ public class BookingRepository {
         }
         return String.join(", ", names);
     }
+
     public Service getServiceById(int id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM services WHERE id = ?", new String[]{String.valueOf(id)});
@@ -469,6 +473,7 @@ public class BookingRepository {
         }
         return null;
     }
+
     public double getBookingAmount(int bookingId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -492,8 +497,10 @@ public class BookingRepository {
         }
 
         cursor.close();
+        db.close();
         return totalAmount;
     }
+
 
     private double getServicesCost(String servicesString) {
         if (servicesString == null || servicesString.isEmpty()) {
@@ -503,20 +510,49 @@ public class BookingRepository {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         double totalServiceCost = 0;
 
-        // Split services by comma if multiple services
-        String[] serviceIds = servicesString.split(",");
+        try {
+            // Nếu services được lưu dưới dạng JSON array: [1,2,3]
+            if (servicesString.startsWith("[") && servicesString.endsWith("]")) {
+                String cleanServices = servicesString.substring(1, servicesString.length() - 1);
+                if (!cleanServices.trim().isEmpty()) {
+                    String[] serviceIds = cleanServices.split(",");
 
-        for (String serviceId : serviceIds) {
-            String query = "SELECT price FROM services WHERE id = ?";
-            Cursor cursor = db.rawQuery(query, new String[]{serviceId.trim()});
+                    for (String serviceId : serviceIds) {
+                        String trimmedId = serviceId.trim();
+                        if (!trimmedId.isEmpty()) {
+                            String query = "SELECT price FROM services WHERE id = ?";
+                            Cursor cursor = db.rawQuery(query, new String[]{trimmedId});
 
-            if (cursor.moveToFirst()) {
-                totalServiceCost += cursor.getDouble(0);
+                            if (cursor.moveToFirst()) {
+                                totalServiceCost += cursor.getDouble(0);
+                            }
+                            cursor.close();
+                        }
+                    }
+                }
+            } else {
+                // Nếu services được lưu dưới dạng string thông thường: "1,2,3"
+                String[] serviceIds = servicesString.split(",");
+
+                for (String serviceId : serviceIds) {
+                    String trimmedId = serviceId.trim();
+                    if (!trimmedId.isEmpty()) {
+                        String query = "SELECT price FROM services WHERE id = ?";
+                        Cursor cursor = db.rawQuery(query, new String[]{trimmedId});
+
+                        if (cursor.moveToFirst()) {
+                            totalServiceCost += cursor.getDouble(0);
+                        }
+                        cursor.close();
+                    }
+                }
             }
-            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
         }
 
         return totalServiceCost;
     }
-
 }

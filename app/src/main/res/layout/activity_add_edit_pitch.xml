@@ -1,4 +1,5 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
@@ -6,63 +7,122 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="32dp">
 
-        <EditText
-            android:id="@+id/edtPitchName"
-            android:hint="Tên sân"
-            android:layout_width="match_parent"
+        <TextView
+            android:text="Thêm sân bóng mới!"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <EditText
-            android:id="@+id/edtPitchPrice"
+        <!-- Tên sân -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên sân">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Giá sân -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="Giá sân"
-            android:inputType="numberDecimal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchPrice"
+                android:inputType="numberDecimal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtPitchAddress"
+        <!-- Địa chỉ -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="Địa chỉ"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtPitchPhone"
+        <!-- Số điện thoại -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="Số điện thoại"
-            android:inputType="phone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchPhone"
+                android:inputType="phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtPitchOpen"
+        <!-- Giờ mở cửa -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="Giờ mở cửa (ví dụ: 07:00)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchOpen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtPitchClose"
+        <!-- Giờ đóng cửa -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="Giờ đóng cửa (ví dụ: 22:00)"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchClose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edtPitchImageUrl"
+        <!-- Ảnh -->
+        <com.google.android.material.textfield.TextInputLayout
             android:hint="URL hình ảnh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtPitchImageUrl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Spinner Chủ sân -->
+        <TextView
+            android:text="Chủ sân"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <Spinner
             android:id="@+id/spOwner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginBottom="16dp" />
 
-        <Button
+        <!-- Nút Lưu -->
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSavePitch"
-            android:text="Lưu"
+            android:text="Thêm sân"
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="12dp"
+            android:icon="@drawable/ic_add"
+            app:iconPadding="8dp"
+            android:iconTint="@color/white"
+            android:textAllCaps="false"/>
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

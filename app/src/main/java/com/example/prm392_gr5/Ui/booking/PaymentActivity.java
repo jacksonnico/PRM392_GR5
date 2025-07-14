@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.prm392_gr5.Data.repository.BookingRepository;
+import com.example.prm392_gr5.Data.model.Payment;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.auth.HomeActivity;
 
@@ -42,8 +43,8 @@ public class PaymentActivity extends AppCompatActivity {
         ImageView ivQr = findViewById(R.id.imageView);
         Button btnConfirm = findViewById(R.id.btnConfirmPayment);
 
-        // Hiển thị tổng tiền (nếu có TextView để hiển thị)
-        TextView tvTotalAmount = findViewById(R.id.tvTotalAmount); // Add this to your layout if needed
+        // Hiển thị tổng tiền
+        TextView tvTotalAmount = findViewById(R.id.tvTotalAmount);
         if (tvTotalAmount != null) {
             NumberFormat formatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             tvTotalAmount.setText("Tổng tiền: " + formatter.format(totalAmount));
@@ -76,8 +77,19 @@ public class PaymentActivity extends AppCompatActivity {
             if (allSuccess) {
                 for (Long bookingId : bookingIds) {
                     double bookingAmount = getBookingAmount(bookingId.intValue());
-                    // Assuming you have a method to create payment record
-                    // bookingRepo.createPayment(bookingId.intValue(), "VNPay", bookingAmount, "completed");
+
+                    // Tạo Payment object
+                    Payment payment = new Payment();
+                    payment.setBookingId(bookingId.intValue());
+                    payment.setMethod("VNPay");
+                    payment.setAmount(bookingAmount);
+                    payment.setStatus("completed");
+
+                    // Lưu vào database
+                    long paymentId = bookingRepo.addPayment(payment);
+                    if (paymentId <= 0) {
+                        allSuccess = false;
+                    }
                 }
             }
 
@@ -105,7 +117,6 @@ public class PaymentActivity extends AppCompatActivity {
 
     private double getBookingAmount(int bookingId) {
         // Get booking details and calculate amount
-        // This assumes you have a method in BookingRepository to get booking details
         return bookingRepo.getBookingAmount(bookingId);
     }
 }
