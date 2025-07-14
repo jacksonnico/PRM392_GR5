@@ -1,58 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#F5F5F5">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <!-- Tổng quan -->
-        <TextView
-            android:text="Tổng quan thống kê"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp" />
-
-        <TextView android:text="Tổng người dùng:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/tvTotalUsers" android:text="0" android:textStyle="bold"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
-
-        <TextView android:text="Tổng chủ sân:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/tvTotalOwners" android:text="0" android:textStyle="bold"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
-
-        <TextView android:text="Tổng booking:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/tvTotalBookings" android:text="0" android:textStyle="bold"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="16dp" />
-
-        <TextView android:text="Tổng doanh thu:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <TextView android:id="@+id/tvTotalRevenue" android:text="0 VNĐ" android:textStyle="bold"
-            android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="24dp" />
-
-        <!-- Lọc theo thời gian -->
-        <TextView android:text="📆 Chọn thời gian thống kê:" android:layout_width="wrap_content" android:layout_height="wrap_content" />
-        <Spinner android:id="@+id/spTimeFilter" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Biểu đồ -->
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pieChart"
+        <!-- Header -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Auto Refresh -->
-        <Button
-            android:id="@+id/btnRefresh"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#2196F3"
-            android:text="🔁 Làm mới dữ liệu"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="📊 Tổng quan thống kê"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:textColor="#1976D2" />
+
+            <Button
+                android:id="@+id/btnRefresh"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:backgroundTint="#4CAF50"
+                android:text="🔄 Làm mới"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:paddingHorizontal="16dp"
+                android:drawablePadding="8dp" />
+        </LinearLayout>
+
+        <!-- Stats Cards Grid -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp">
+
+            <!-- First Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <!-- Users Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="👥"
+                            android:textSize="32sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalUsers"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            android:textColor="#1976D2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Người dùng"
+                            android:textSize="12sp"
+                            android:textColor="#666666" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Owners Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🏟️"
+                            android:textSize="32sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalOwners"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            android:textColor="#FF6B35" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chủ sân"
+                            android:textSize="12sp"
+                            android:textColor="#666666" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+
+            <!-- Second Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Bookings Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📅"
+                            android:textSize="32sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalBookings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textStyle="bold"
+                            android:textSize="24sp"
+                            android:textColor="#4CAF50" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Booking"
+                            android:textSize="12sp"
+                            android:textColor="#666666" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Revenue Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="6dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💰"
+                            android:textSize="32sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvTotalRevenue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 VNĐ"
+                            android:textStyle="bold"
+                            android:textSize="18sp"
+                            android:textColor="#E91E63"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Doanh thu"
+                            android:textSize="12sp"
+                            android:textColor="#666666" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Time Filter Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📅 Chọn thời gian thống kê"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="12dp" />
+
+                <Spinner
+                    android:id="@+id/spTimeFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/spinner_background"
+                    android:padding="12dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Chart Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Biểu đồ doanh thu"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="#333333"
+                    android:layout_marginBottom="16dp" />
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </ScrollView>
