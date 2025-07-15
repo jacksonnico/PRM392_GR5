@@ -7,37 +7,43 @@ public class Message {
     private String time;
     private String pitchName;
     private int userId;
+    private int ownerId; // Thêm ownerId
 
-    public Message(int id, String sender, String message, String time, String pitchName, int userId) {
+    public Message(int id, String sender, String message, String time, String pitchName, int userId, int ownerId) {
         this.id = id;
         this.sender = sender;
         this.message = message;
         this.time = time;
         this.pitchName = pitchName;
         this.userId = userId;
+        this.ownerId = ownerId;
     }
 
-    // ✅ Getter và Setter cho id
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    public int getId() {
+        return id;
+    }
 
-    // ✅ Getter và Setter cho sender
-    public String getSender() { return sender; }
-    public void setSender(String sender) { this.sender = sender; }
+    public String getSender() {
+        return sender;
+    }
 
-    // ✅ Getter và Setter cho message
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public String getMessage() {
+        return message;
+    }
 
-    // ✅ Getter và Setter cho time
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public String getTime() {
+        return time;
+    }
 
-    // ✅ Getter và Setter cho pitchName
-    public String getPitchName() { return pitchName; }
-    public void setPitchName(String pitchName) { this.pitchName = pitchName; }
+    public String getPitchName() {
+        return pitchName;
+    }
 
-    // ✅ Getter và Setter cho userId
-    public int getUserId() { return userId; }
-    public void setUserId(int userId) { this.userId = userId; }
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getOwnerId() {
+        return ownerId;
+    }
 }

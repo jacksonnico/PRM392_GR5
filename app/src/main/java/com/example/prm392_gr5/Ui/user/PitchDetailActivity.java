@@ -16,6 +16,7 @@ import com.example.prm392_gr5.Data.repository.NotificationManagerRepository;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.Data.repository.UserProfileRepository;
 import com.example.prm392_gr5.R;
+import com.example.prm392_gr5.Ui.auth.SharedPreferencesHelper;
 import com.example.prm392_gr5.Ui.booking.BookingActivity;
 import com.example.prm392_gr5.Ui.user.UserMessagesActivity;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -49,14 +50,15 @@ public class PitchDetailActivity extends AppCompatActivity {
         int pitchId = getIntent().getIntExtra("pitchId", -1);
         userId = getIntent().getIntExtra("userId", -1);
 
-        if (userId < 0) {
-            userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getInt("userId", -1);
-            if (userId < 0) {
-                Toast.makeText(this, "Vui lòng đăng nhập để nhắn tin!", Toast.LENGTH_SHORT).show();
-                finish();
-                return;
-            }
-        }
+        // Loại bỏ kiểm tra đăng nhập (userId < 0)
+        // if (userId < 0) {
+        //     userId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getInt("userId", -1);
+        //     if (userId < 0) {
+        //         Toast.makeText(this, "Vui lòng đăng nhập để nhắn tin!", Toast.LENGTH_SHORT).show();
+        //         finish();
+        //         return;
+        //     }
+        // }
 
         p = pitchRepo.getPitchById(pitchId); // Sử dụng PitchRepository
         if (p == null) {
@@ -71,16 +73,16 @@ public class PitchDetailActivity extends AppCompatActivity {
         ownerId = p.getOwnerId();
 
         // 1. Gán View
-        ivPitchImage    = findViewById(R.id.ivPitchImage);
-        tvPitchName     = findViewById(R.id.tvPitchName);
-        tvPitchAddress  = findViewById(R.id.tvPitchAddress);
-        tvPhone         = findViewById(R.id.tvPhone);
-        tvPrice         = findViewById(R.id.tvPrice);
-        tvOpenClose     = findViewById(R.id.tvOpenClose);
+        ivPitchImage = findViewById(R.id.ivPitchImage);
+        tvPitchName = findViewById(R.id.tvPitchName);
+        tvPitchAddress = findViewById(R.id.tvPitchAddress);
+        tvPhone = findViewById(R.id.tvPhone);
+        tvPrice = findViewById(R.id.tvPrice);
+        tvOpenClose = findViewById(R.id.tvOpenClose);
         tvLocationLabel = findViewById(R.id.tvLocationLabel);
-        btnMap          = findViewById(R.id.btnMap);
-        btnBook         = findViewById(R.id.btnBook);
-        btnMessage      = findViewById(R.id.btnMessage);
+        btnMap = findViewById(R.id.btnMap);
+        btnBook = findViewById(R.id.btnBook);
+        btnMessage = findViewById(R.id.btnMessage);
 
         // 2. Hiển thị thông tin sân
         tvPitchName.setText(p.getName());
@@ -147,12 +149,22 @@ public class PitchDetailActivity extends AppCompatActivity {
         });
 
         // 6. Nhắn tin
-        btnMessage.setOnClickListener(v -> {
-            Intent intent = new Intent(this, UserMessagesActivity.class);
-            intent.putExtra("pitchName", p.getName());
-            intent.putExtra("phoneNumber", p.getPhoneNumber());
-            intent.putExtra("userId", userId);
-            startActivity(intent);
-        });
+        btnMessage = findViewById(R.id.btnMessage);
+
+// Lấy userId từ SharedPreferences
+        userId = SharedPreferencesHelper.getUserId(this);
+
+        if (userId == -1) {
+            Toast.makeText(this, "Bạn cần đăng nhập để nhắn tin", Toast.LENGTH_SHORT).show();
+            btnMessage.setEnabled(false);
+        } else {
+            btnMessage.setEnabled(true);
+            btnMessage.setOnClickListener(v -> {
+                Intent intent = new Intent(this, UserMessagesActivity.class);
+                intent.putExtra("pitchName", p.getName());
+                intent.putExtra("phoneNumber", p.getPhoneNumber());
+                startActivity(intent);
+            });
+        }
     }
 }

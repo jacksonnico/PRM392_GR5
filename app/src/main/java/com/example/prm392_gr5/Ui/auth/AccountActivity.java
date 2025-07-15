@@ -86,7 +86,12 @@ public class AccountActivity extends Activity {
                     .setMessage("Bạn có chắc muốn đăng xuất không?")
                     .setPositiveButton("Đăng xuất", (dialog, which) -> {
                         SharedPreferencesHelper.clear(this);
-                        startActivity(new Intent(this, LoginActivity.class));
+                        // Quay về LoginActivity và xóa tất cả Activity trong back stack
+                        Intent intent = new Intent(this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa các Activity trước đó
+                        startActivity(intent);
+
+                        // Đảm bảo người dùng không quay lại màn hình tài khoản
                         finish();
                     })
                     .setNegativeButton("Hủy", null)
@@ -116,19 +121,39 @@ public class AccountActivity extends Activity {
 
     private void setupFooterNavigation() {
         navHome.setOnClickListener(v -> {
-            startActivity(new Intent(this, HomeActivity.class));
+            String userRole = SharedPreferencesHelper.getRole(this);
+            // Điều hướng theo role
+            Intent intent;
+            switch (userRole) {
+                case "admin":
+                    intent = new Intent(this, AdminMainActivity.class);
+                    break;
+                case "owner":
+                    intent = new Intent(this, ManagePitchActivity.class);  // Điều hướng đến màn hình quản lý sân của owner
+                    break;
+                case "user":
+                default:
+                    intent = new Intent(this, HomeActivity.class);  // Điều hướng đến màn hình chính của user
+                    break;
+            }
+
+            startActivity(intent);
             finish();
         });
+
         navFavorite.setOnClickListener(v ->
                 Toast.makeText(this, "Chức năng Yêu thích đang phát triển", Toast.LENGTH_SHORT).show()
         );
+
         navNotify.setOnClickListener(v -> {
             startActivity(new Intent(this, NotificationActivity.class));
         });
+
         navAccount.setOnClickListener(v ->
                 Toast.makeText(this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show()
         );
     }
+
 //    private void setupFooterNavigation() {
 //        navHome.setOnClickListener(v -> {
 //            // Lấy thông tin user hiện tại từ SharedPreferences hoặc session
