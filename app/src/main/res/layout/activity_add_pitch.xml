@@ -7,7 +7,6 @@
     android:background="#F0F2F5"
     tools:context=".Ui.owner.AddPitchActivity">
 
-    <!-- Ảnh header -->
     <ImageView
         android:id="@+id/header_image"
         android:layout_width="0dp"
@@ -19,7 +18,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:src="@tools:sample/backgrounds/scenic" />
 
-    <!-- Nút back -->
     <ImageView
         android:id="@+id/btn_back"
         android:layout_width="40dp"
@@ -33,7 +31,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@android:color/white" />
 
-    <!-- Nội dung cuộn -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
@@ -52,7 +49,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Thông tin cơ bản -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,7 +71,6 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Tên sân -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -99,7 +94,6 @@
                         android:textColor="@android:color/black"
                         android:layout_marginBottom="16dp" />
 
-                    <!-- Địa chỉ -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +132,6 @@
                             android:clickable="true" />
                     </LinearLayout>
 
-                    <!-- Giờ hoạt động -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -152,13 +145,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Từ: "
-                            android:textSize="16sp" />
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="16dp"> <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Từ: "
+                        android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/tv_open_time"
@@ -191,10 +183,78 @@
                             android:background="@drawable/bg_edit_text_rounded"
                             android:gravity="center" />
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số điện thoại liên hệ *"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/et_phone_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nhập số điện thoại liên hệ"
+                        android:padding="12dp"
+                        android:background="@drawable/bg_edit_text_rounded"
+                        android:minHeight="48dp"
+                        android:singleLine="true"
+                        android:inputType="phone"
+                        android:maxLength="15"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Tiện ích -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hình ảnh chính *"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="URL ảnh (hoặc URL ảnh đại diện)"
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/et_image_url"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ví dụ: https://example.com/pitch_image.jpg"
+                        android:padding="12dp"
+                        android:background="@drawable/bg_edit_text_rounded"
+                        android:minHeight="48dp"
+                        android:singleLine="true"
+                        android:inputType="textUri"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -230,7 +290,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Giới thiệu -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -267,7 +326,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Cơ sở vật chất -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -303,7 +361,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Giá thuê -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -353,7 +410,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Lưu ý -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -389,7 +445,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- Nút lưu -->
             <Button
                 android:id="@+id/btn_save_pitch"
                 android:layout_width="match_parent"
