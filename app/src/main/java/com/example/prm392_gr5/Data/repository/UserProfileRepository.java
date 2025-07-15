@@ -3,6 +3,7 @@ package com.example.prm392_gr5.Data.repository;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.prm392_gr5.Data.db.DatabaseHelper;
 
@@ -17,14 +18,15 @@ public class UserProfileRepository {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         try {
-            cursor = db.rawQuery("SELECT fullName FROM " + DatabaseHelper.TBL_USERS + " WHERE id = ?", new String[]{String.valueOf(userId)});
+            cursor = db.rawQuery("SELECT fullName FROM users WHERE id = ?",
+                    new String[]{String.valueOf(userId)});
             if (cursor.moveToFirst()) {
                 return cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
             }
-            return "User_" + userId;
+            return "Khách hàng";
         } catch (Exception e) {
-            e.printStackTrace();
-            return "User_" + userId;
+            Log.e("UserProfileRepository", "Error getting user name for id " + userId + ": " + e.getMessage());
+            return "Khách hàng";
         } finally {
             if (cursor != null) cursor.close();
             db.close();
@@ -35,34 +37,15 @@ public class UserProfileRepository {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = null;
         try {
-            cursor = db.rawQuery("SELECT phoneNumber FROM " + DatabaseHelper.TBL_USERS + " WHERE id = ?", new String[]{String.valueOf(userId)});
+            cursor = db.rawQuery("SELECT phoneNumber FROM users WHERE id = ?",
+                    new String[]{String.valueOf(userId)});
             if (cursor.moveToFirst()) {
                 return cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
             }
-            return "";
+            return null;
         } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        } finally {
-            if (cursor != null) cursor.close();
-            db.close();
-        }
-    }
-
-    public String getUserNameAndPhone(int userId) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery("SELECT fullName, phoneNumber FROM " + DatabaseHelper.TBL_USERS + " WHERE id = ?", new String[]{String.valueOf(userId)});
-            if (cursor.moveToFirst()) {
-                String name = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
-                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
-                return name + " - " + phone;
-            }
-            return "Người dùng không xác định";
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Người dùng không xác định";
+            Log.e("UserProfileRepository", "Error getting phone number for id " + userId + ": " + e.getMessage());
+            return null;
         } finally {
             if (cursor != null) cursor.close();
             db.close();
