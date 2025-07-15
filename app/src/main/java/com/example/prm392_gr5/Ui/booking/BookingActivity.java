@@ -86,7 +86,7 @@ public class BookingActivity extends AppCompatActivity {
         tvSelectedPitch.setText(pitch.getName());
 
         initDateButtons();
-        setupCheckboxRepeat(); // ✅ THÊM DÒNG NÀY
+        setupCheckboxRepeat();
         setupTimeSlotSpinner();
         loadServiceCheckboxes();
         setupBookingButton();
@@ -123,7 +123,7 @@ public class BookingActivity extends AppCompatActivity {
                     selectedDates.add(d);
                     v.setAlpha(0.5f);
                 }
-                cbRepeat.setChecked(selectedDates.size() == 7); // cập nhật trạng thái checkbox
+                cbRepeat.setChecked(selectedDates.size() == 7);
                 updateBookButtonState();
             });
 
@@ -141,7 +141,7 @@ public class BookingActivity extends AppCompatActivity {
 
     private void setupCheckboxRepeat() {
         cbRepeat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            selectedDates.clear(); // clear trước
+            selectedDates.clear();
             for (int i = 0; i < llDates.getChildCount(); i++) {
                 View v = llDates.getChildAt(i);
                 if (v instanceof Button) {
@@ -217,6 +217,13 @@ public class BookingActivity extends AppCompatActivity {
                 try {
                     Date parsed = dbDateFormat.parse(dt);
                     String norm = dbDateFormat.format(parsed);
+
+                    // 🔔 Check nếu đã có booking cho pitchId + dateTime + timeSlot
+                    if (bookingRepo.isTimeSlotBooked(selectedPitchId, norm, selectedTimeSlot)) {
+                        Toast.makeText(this, "Khung giờ " + selectedTimeSlot + " ngày " + date + " đã được đặt!", Toast.LENGTH_LONG).show();
+                        return; // Ngừng ngay nếu có xung đột
+                    }
+
                     String servicesJson = new JSONArray(new ArrayList<>(selectedServices)).toString();
                     toCreate.add(new Booking(
                             0, currentUserId, selectedPitchId,
