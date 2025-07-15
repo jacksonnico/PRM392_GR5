@@ -15,9 +15,8 @@ import java.util.List;
 public class UserMessageListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserMessageAdapter adapter;
-    private OwnerChatSummaryRepository summaryRepo; // Thay DatabaseHelper bằng repository
+    private OwnerChatSummaryRepository summaryRepo;
     private int ownerId;
-    private int userId; // ✅ Thêm biến userId
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,22 +24,20 @@ public class UserMessageListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_message_list);
 
         recyclerView = findViewById(R.id.recyclerViewUserMessages);
-        summaryRepo = new OwnerChatSummaryRepository(this); // Khởi tạo repository với Context
+        summaryRepo = new OwnerChatSummaryRepository(this);
 
-        // Nhận ownerId và userId từ Intent
+        // Nhận ownerId từ Intent hoặc mặc định
         ownerId = getIntent().getIntExtra("ownerId", 0);
-        userId = getIntent().getIntExtra("userId", 0); // ✅ Lấy userId
-
         if (ownerId == 0) {
-            ownerId = 2; // Giá trị mặc định
+            ownerId = 2; // ✅ Giá trị mặc định
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<UserMessageSummary> messageSummaries = summaryRepo.getUserMessageSummariesForOwner(ownerId); // Sử dụng repository
+        List<UserMessageSummary> messageSummaries = summaryRepo.getUserMessageSummariesForOwner(ownerId);
 
-        // ✅ Gọi đúng constructor với 3 tham số
-        adapter = new UserMessageAdapter(messageSummaries, ownerId, userId);
+        // ✅ Gọi đúng constructor: (List, ownerId, context)
+        adapter = new UserMessageAdapter(messageSummaries, ownerId, this);
         recyclerView.setAdapter(adapter);
     }
 }
