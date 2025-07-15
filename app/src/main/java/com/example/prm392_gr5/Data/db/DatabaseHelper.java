@@ -16,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TBL_NOTIFICATIONS = "notifications";
     public static final String TBL_PAYMENTS = "payments";
     public static final String TBL_SERVICES = "services";
+    //
 
     private final Context context;
 
