@@ -2,26 +2,85 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvDisplayName"
-        android:layout_width="wrap_content"
+    <!-- Tin nhắn người gửi (bạn) - căn phải -->
+    <LinearLayout
+        android:id="@+id/sentMessageLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:gravity="end"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/tvMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp" />
+        <TextView
+            android:id="@+id/tvSenderNameSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="#007AFF" />
 
-    <TextView
-        android:id="@+id/tvTime"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tvMessageSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_message_sent"
+            android:padding="8dp"
+            android:text="Hello!"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvTimeSent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:30, 15/07/2025"
+            android:textColor="#A0A0A0"
+            android:textSize="10sp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <!-- Tin nhắn người nhận - căn trái -->
+    <LinearLayout
+        android:id="@+id/receivedMessageLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#888888" />
+        android:gravity="start"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvSenderNameReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Người nhận"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:textColor="#FF9500" />
+
+        <TextView
+            android:id="@+id/tvMessageReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_message_received"
+            android:padding="8dp"
+            android:text="Hi!"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvTimeReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10:32, 15/07/2025"
+            android:textColor="#A0A0A0"
+            android:textSize="10sp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
 </LinearLayout>

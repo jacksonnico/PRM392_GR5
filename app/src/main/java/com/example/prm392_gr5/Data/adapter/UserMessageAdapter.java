@@ -1,10 +1,13 @@
 package com.example.prm392_gr5.Data.adapter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_gr5.Data.model.UserMessageSummary;
@@ -13,55 +16,58 @@ import com.example.prm392_gr5.Ui.PitchOwnerMessagesActivity;
 
 import java.util.List;
 
-public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.UserMessageViewHolder> {
-    private List<UserMessageSummary> userMessages;
-    private int ownerId;
-    private int userId; // ✅ Thêm userId vào Adapter
+public class UserMessageAdapter extends RecyclerView.Adapter<UserMessageAdapter.ViewHolder> {
+    private final List<UserMessageSummary> messageSummaries;
+    private final int ownerId;
+    private final Context context;
 
-    public static class UserMessageViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvDisplayName, tvLastMessage, tvTime;
-
-        public UserMessageViewHolder(View view) {
-            super(view);
-            tvDisplayName = view.findViewById(R.id.tvUserName);
-            tvLastMessage = view.findViewById(R.id.tvLastMessage);
-            tvTime = view.findViewById(R.id.tvTime);
-        }
-    }
-
-    // ✅ Constructor mới nhận 3 tham số
-    public UserMessageAdapter(List<UserMessageSummary> userMessages, int ownerId, int userId) {
-        this.userMessages = userMessages;
+    public UserMessageAdapter(List<UserMessageSummary> messageSummaries, int ownerId, Context context) {
+        this.messageSummaries = messageSummaries;
         this.ownerId = ownerId;
-        this.userId = userId;
+        this.context = context;
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_user_message, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public UserMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_message, parent, false);
-        return new UserMessageViewHolder(view);
-    }
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        UserMessageSummary summary = messageSummaries.get(position);
 
-    @Override
-    public void onBindViewHolder(UserMessageViewHolder holder, int position) {
-        UserMessageSummary summary = userMessages.get(position);
-        holder.tvDisplayName.setText(summary.getDisplayName());
-        holder.tvLastMessage.setText(summary.getLastMessage());
-        holder.tvTime.setText(summary.getLastTime());
+        holder.tvUserName.setText(summary.getUserName() != null ? summary.getUserName() : "Người dùng");
+        holder.tvPitchName.setText(summary.getPitchName() != null ? summary.getPitchName() : "Sân bóng");
+        holder.tvLastMessage.setText(summary.getLastMessage() != null ? summary.getLastMessage() : "(Chưa có tin nhắn)");
+        holder.tvTime.setText(summary.getLastTime() != null ? summary.getLastTime() : ""); // ✅ FIX
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), PitchOwnerMessagesActivity.class);
+            Intent intent = new Intent(context, PitchOwnerMessagesActivity.class);
             intent.putExtra("pitchName", summary.getPitchName());
-            intent.putExtra("fullName", summary.getDisplayName());
             intent.putExtra("phoneNumber", summary.getPhoneNumber());
-            intent.putExtra("userId", summary.getUserId()); // ✅ Lấy userId từ summary
-            intent.putExtra("ownerId", ownerId);
-            holder.itemView.getContext().startActivity(intent);
+            intent.putExtra("userId", summary.getUserId());
+            intent.putExtra("userName", summary.getUserName());
+            context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return userMessages.size();
+        return messageSummaries != null ? messageSummaries.size() : 0;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvUserName, tvPitchName, tvLastMessage, tvTime;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            tvUserName = itemView.findViewById(R.id.tvUserName);
+            tvPitchName = itemView.findViewById(R.id.tvPitchName);
+            tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
+            tvTime = itemView.findViewById(R.id.tvTime);
+        }
     }
 }

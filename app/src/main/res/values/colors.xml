@@ -13,6 +13,16 @@
     <color name="colorPrimaryDark">#08306B</color>
     <color name="colorAccent">#FFC107</color>
 
+    <color name="primary_light">#E3F2FD</color>
+    <color name="primary_dark">#1976D2</color>
+
+    <!-- Background Colors -->
+    <color name="background_color">#F5F5F5</color>
+    <color name="card_background">#FFFFFF</color>
+
+
+
+    <color name="unread_indicator">#FF4444</color>
 
     <!-- Background Colors -->
     <color name="background_light">#F5F5F5</color>
