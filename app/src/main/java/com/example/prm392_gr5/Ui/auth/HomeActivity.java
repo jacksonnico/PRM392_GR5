@@ -9,12 +9,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.prm392_gr5.Data.model.Pitch;
+import com.example.prm392_gr5.Data.repository.NotificationManagerRepository;
 import com.example.prm392_gr5.Data.repository.PitchRepository;
 import com.example.prm392_gr5.R;
 import com.example.prm392_gr5.Ui.user.NotificationActivity;
@@ -29,6 +31,7 @@ public class HomeActivity extends Activity {
     EditText edtSearch;
     ImageView btnSearch;
     LinearLayout navAccount, navHome, navFavorite, navNotify;
+    TextView tvBadge; // 👈 Badge hiển thị số thông báo
 
     RecyclerView rvSuggestedPitches;
     PitchAdapter suggestedAdapter;
@@ -36,6 +39,8 @@ public class HomeActivity extends Activity {
     private List<Pitch> originalPitchList;
     private List<Pitch> filteredPitchList;
     private PitchRepository repo;
+
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,11 @@ public class HomeActivity extends Activity {
         setupSuggestedList();
         setupEvent();
         setupSearchFunction();
+
+        userId = SharedPreferencesHelper.getUserId(this); // Lấy userId hiện tại
+        if (userId != -1) {
+            updateBadge(); // 👈 Cập nhật badge ngay khi mở app
+        }
     }
 
     private void mappingViews() {
@@ -56,59 +66,46 @@ public class HomeActivity extends Activity {
         navHome    = findViewById(R.id.navHome);
         navFavorite= findViewById(R.id.navFavorite);
         navNotify  = findViewById(R.id.navNotify);
+        tvBadge    = findViewById(R.id.tvBadge); // 👈 Badge số thông báo
 
         rvSuggestedPitches = findViewById(R.id.rvSuggestedPitches);
     }
 
     private void setupSuggestedList() {
-        // 1. LayoutManager
         rvSuggestedPitches.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
 
-        // 2. Lấy dữ liệu từ repository
         repo = new PitchRepository(this);
         originalPitchList = repo.getAllPitches();
         filteredPitchList = new ArrayList<>(originalPitchList);
 
-        // 3. Tạo adapter và gán sự kiện click vào item
         suggestedAdapter = new PitchAdapter(filteredPitchList, pitch -> {
             Intent intent = new Intent(HomeActivity.this, PitchDetailActivity.class);
             intent.putExtra("pitchId", pitch.getId());
-            intent.putExtra("userId", SharedPreferencesHelper.getUserId(this)); // Thêm truyền userId
+            intent.putExtra("userId", userId); // Truyền userId
             startActivity(intent);
         });
         rvSuggestedPitches.setAdapter(suggestedAdapter);
     }
 
     private void setupSearchFunction() {
-        // Tìm kiếm theo thời gian thực khi người dùng nhập
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Không cần xử lý
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Gọi hàm tìm kiếm khi text thay đổi
                 searchPitches(s.toString().trim());
             }
-
             @Override
-            public void afterTextChanged(Editable s) {
-                // Không cần xử lý
-            }
+            public void afterTextChanged(Editable s) {}
         });
     }
 
     private void searchPitches(String keyword) {
         filteredPitchList.clear();
-
         if (keyword.isEmpty()) {
-            // Nếu không có từ khóa, hiển thị tất cả
             filteredPitchList.addAll(originalPitchList);
         } else {
-            // Lọc theo từ khóa
             String lowerKeyword = keyword.toLowerCase();
             for (Pitch pitch : originalPitchList) {
                 if (matchesSearchCriteria(pitch, lowerKeyword)) {
@@ -116,29 +113,16 @@ public class HomeActivity extends Activity {
                 }
             }
         }
-
-        // Cập nhật RecyclerView
         suggestedAdapter.notifyDataSetChanged();
 
-        // Hiển thị thông báo nếu không tìm thấy kết quả
         if (filteredPitchList.isEmpty() && !keyword.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy sân phù hợp", Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean matchesSearchCriteria(Pitch pitch, String keyword) {
-        // Tìm kiếm theo tên sân
-        if (pitch.getName() != null && pitch.getName().toLowerCase().contains(keyword)) {
-            return true;
-        }
-
-        // Tìm kiếm theo địa chỉ
-        if (pitch.getAddress() != null && pitch.getAddress().toLowerCase().contains(keyword)) {
-            return true;
-        }
-
-
-
+        if (pitch.getName() != null && pitch.getName().toLowerCase().contains(keyword)) return true;
+        if (pitch.getAddress() != null && pitch.getAddress().toLowerCase().contains(keyword)) return true;
         return false;
     }
 
@@ -148,7 +132,6 @@ public class HomeActivity extends Activity {
             if (keyword.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập từ khóa tìm kiếm", Toast.LENGTH_SHORT).show();
             } else {
-                // Thực hiện tìm kiếm (đã được xử lý trong TextWatcher)
                 searchPitches(keyword);
                 Toast.makeText(this, "Tìm kiếm: " + keyword, Toast.LENGTH_SHORT).show();
             }
@@ -167,15 +150,12 @@ public class HomeActivity extends Activity {
         });
 
         navNotify.setOnClickListener(v -> {
-            startActivity(new Intent(HomeActivity.this, NotificationActivity.class));
-        });
-    }
+            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
+            startActivity(intent);
 
-    // Phương thức để làm mới danh sách khi quay lại từ activity khác
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshPitchList();
+            // 👇 Khi người dùng mở NotificationActivity => reset badge về 0
+            clearBadge();
+        });
     }
 
     private void refreshPitchList() {
@@ -184,10 +164,31 @@ public class HomeActivity extends Activity {
         searchPitches(currentKeyword);
     }
 
-    // Phương thức để xóa từ khóa tìm kiếm
+    private void updateBadge() {
+        NotificationManagerRepository repo = new NotificationManagerRepository(this);
+        int unreadCount = repo.getUnreadCount(userId, "user");
+
+        if (unreadCount > 0) {
+            tvBadge.setText(String.valueOf(unreadCount));
+            tvBadge.setVisibility(View.VISIBLE);
+        } else {
+            tvBadge.setVisibility(View.GONE);
+        }
+    }
+
+    private void clearBadge() {
+        tvBadge.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshPitchList();
+        updateBadge(); // 👈 Refresh badge khi quay lại Home
+    }
+
     public void clearSearch() {
         edtSearch.setText("");
         searchPitches("");
     }
-
 }

@@ -47,6 +47,10 @@ public class ForgotPasswordActivity extends Activity {
             showToast("Mật khẩu xác nhận không khớp");
             return;
         }
+        if (!isPasswordValid(newPass)) {
+            showToast("Mật khẩu phải từ 6-20 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt");
+            return;
+        }
 
         if (!userRepo.isPhoneExists(phone)) {
             showToast("Số điện thoại chưa đăng ký");
@@ -70,5 +74,16 @@ public class ForgotPasswordActivity extends Activity {
 
     private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+    private boolean isPasswordValid(String password) {
+        if (password.length() < 6 || password.length() > 20) return false;
+        if (password.contains(" ")) return false;
+
+        boolean hasUpper = password.matches(".*[A-Z].*");
+        boolean hasLower = password.matches(".*[a-z].*");
+        boolean hasDigit = password.matches(".*[0-9].*");
+        boolean hasSpecial = password.matches(".*[!@#$%^&*()_+=|<>?{}\\[\\]~-].*");
+
+        return hasUpper && hasLower && hasDigit && hasSpecial;
     }
 }

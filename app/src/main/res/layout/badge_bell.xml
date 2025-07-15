@@ -1,0 +1,24 @@
+<FrameLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/ivBell"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_notify"
+       />
+
+    <TextView
+        android:id="@+id/tvBadge"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="end|top"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="2dp"
+        android:background="@drawable/ic_badge_background"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textSize="10sp"
+        android:visibility="gone" />
+</FrameLayout>

@@ -18,7 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             android:title="Đặt sân"
-            android:titleTextColor="@android:color/white"
+            android:textColor="#FFFFFF"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>

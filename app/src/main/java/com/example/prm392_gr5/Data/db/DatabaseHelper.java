@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PitchBooking.db";
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8; // ✅ Tăng version
 
     public static final String TBL_USERS = "users";
     public static final String TBL_OWNERS = "owners";
@@ -62,13 +62,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(pitchId) REFERENCES pitches(id), " +
                 "FOREIGN KEY(userId) REFERENCES users(id))");
 
-        // Tạo bảng notifications
+        // ✅ Tạo bảng notifications có thêm isRead
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TBL_NOTIFICATIONS + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "message TEXT, " +
                 "dateTime TEXT, " +
                 "receiverId INTEGER, " +
-                "receiverType TEXT)");
+                "receiverType TEXT, " +
+                "isRead INTEGER DEFAULT 0)");
 
         // Tạo bảng payments
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TBL_PAYMENTS + " (" +
@@ -88,69 +89,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "price REAL, " +
                 "FOREIGN KEY(pitchId) REFERENCES pitches(id))");
 
-        // Dữ liệu mẫu
-        // USERS (4 người dùng: 2 owner, 1 user, 1 admin)
+        // ✅ Dữ liệu mẫu
         db.execSQL("INSERT INTO " + TBL_USERS + " (fullName, phoneNumber, password, role, isActive) VALUES " +
                 "('Nguyễn Xuân Chiến', '0836663285', 'chien2003', 'user', 1)," +
                 "('Đỗ Văn Mạnh', '0987654321', '0987654321', 'owner', 1)," +
                 "('Admin', '0999999999', 'adminpass', 'admin', 1)," +
                 "('Trần Thị Lan', '0911222333', 'lanpass', 'owner', 1)");
 
-        // OWNERS (khớp id với USERS phía trên)
         db.execSQL("INSERT INTO " + TBL_OWNERS + " (id, fullName, phoneNumber, password, role) VALUES " +
                 "(4, 'Trần Thị Lan', '0911222333', 'lanpass', 'owner')," +
                 "(2, 'Đỗ Văn Mạnh', '0987654321', '0987654321', 'owner')");
-        db.execSQL("INSERT INTO " + TBL_OWNERS + " (fullName, phoneNumber, password, role) VALUES " +
-                "('Nguyen Van Chien', '0398263126', '123456', 'owner')");
 
-        // PITCHES (1 sân của Mạnh, 2 sân của Lan)
         db.execSQL("INSERT INTO " + TBL_PITCHES + " (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) VALUES " +
                 "(2, 'Sân Bóng Đá Bao Cấp', 500000, 'Hoa Lac Hi-tech Park, Tân Xá, Hà Nội', '0979504194', '06:00', '22:00', 'https://afd.com.vn/images/image/tin/co-san-bong.jpg')," +
-                "(4, 'Sân Bóng Đại Học Quốc Gia', 550000, 'Tuyến đường Việt Nhật, Thạch Hoà, Hà Nội, 13100', '0961150113', '07:00', '21:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA_gd_yXrzRrWWhzxAKf-XKPWdzayju_O7ig&s.jpg')," +
-                "(2, 'Sân Bóng 5 Cửa Ô', 500000, '2GHX+425, Tân Xá, Thạch Thất, Hà Nội', '0979504194', '06:00', '22:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCcMUCBLWw2FVmuRYVJbkQc2TvZ5lVGwTHEQ&s.jpg')");
+                "(4, 'Sân Bóng Đại Học Quốc Gia', 550000, 'Tuyến đường Việt Nhật, Thạch Hoà, Hà Nội, 13100', '0961150113', '07:00', '21:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA_gd_yXrzRrWWhzxAKf-XKPWdzayju_O7ig&s.jpg')");
 
-        // MESSAGES
-        db.execSQL("INSERT INTO " + TBL_MESSAGES + " (sender, message, time, pitchName, userId, ownerId) VALUES " +
-                "('Nguyễn Xuân Chiến', 'Đặt sân lúc 10h', '12:00, 10/07/2025', 'Sân Bóng Đá Bao Cấp', 1, 0)," +
-                "('Đỗ Văn Mạnh', 'Đã nhận, xác nhận nhé!', '12:01, 10/07/2025', 'Sân Bóng Đá Bao Cấp', 0, 2)");
-
-        // BOOKINGS (3 booking cho sân của Mạnh - pitchId = 1)
-        db.execSQL("INSERT INTO " + TBL_BOOKINGS + " (pitchId, userId, dateTime, status, depositAmount, services, timeSlot) VALUES " +
-                "(1, 1, '2025-07-10T10:00:00', 'confirmed', 200000.0, '', '10:00 - 11:00')," +
-                "(1, 1, '2025-07-11T10:00:00', 'confirmed', 200000.0, '', '10:00 - 11:00')," +
-                "(1, 1, '2025-07-12T10:00:00', 'confirmed', 200000.0, '', '10:00 - 11:00')");
-        db.execSQL("INSERT INTO " + TBL_BOOKINGS + " (pitchId, userId, dateTime, status, depositAmount, services) VALUES " +
-                "(1, 1, '2025-07-10T10:00:00', 'confirmed', 200000.0, '')");
-
-        db.execSQL("INSERT INTO " + TBL_PAYMENTS + " (bookingId, method, amount, status) VALUES " +
-                "(1, 'cash', 500000, 'completed')");
-
-        db.execSQL("INSERT INTO " + TBL_NOTIFICATIONS + " (message, dateTime, receiverId, receiverType) VALUES " +
-                "('Đặt sân thành công', '12:02, 10/07/2025', 1, 'user')," +
-                "('Xác nhận thanh toán', '12:03, 10/07/2025', 1, 'user')");
-
-        // SERVICES (dịch vụ cho sân 1 và 2)
-        db.execSQL("INSERT INTO " + TBL_SERVICES + " (pitchId, name, price) VALUES " +
-                "(1, 'Thuê bóng', 50000)," +
-                "(1, 'Nước uống', 10000)," +
-                "(2, 'Thuê bóng', 60000)");
-
-        // PAYMENTS (3 khoản thanh toán tương ứng 3 booking)
-        db.execSQL("INSERT INTO " + TBL_PAYMENTS + " (bookingId, method, amount, status) VALUES " +
-                "(1, 'cash', 200000, 'completed')," +
-                "(2, 'momo', 250000, 'completed')," +
-                "(3, 'banking', 300000, 'completed')");
+        db.execSQL("INSERT INTO " + TBL_NOTIFICATIONS + " (message, dateTime, receiverId, receiverType, isRead) VALUES " +
+                "('Đặt sân thành công', '12:02, 10/07/2025', 1, 'user', 0)," +
+                "('Xác nhận thanh toán', '12:03, 10/07/2025', 1, 'user', 0)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 7) {
-            db.execSQL("ALTER TABLE " + TBL_BOOKINGS + " ADD COLUMN depositAmount REAL DEFAULT 0");
-            db.execSQL("ALTER TABLE " + TBL_BOOKINGS + " ADD COLUMN services TEXT");
-            db.execSQL("ALTER TABLE " + TBL_BOOKINGS + " ADD COLUMN timeSlot TEXT");
-            db.execSQL("ALTER TABLE " + TBL_MESSAGES + " ADD COLUMN ownerId INTEGER");
+        if (oldVersion < 8) {
+            db.execSQL("ALTER TABLE " + TBL_NOTIFICATIONS + " ADD COLUMN isRead INTEGER DEFAULT 0");
         }
-
     }
 
     public Context getContext() {

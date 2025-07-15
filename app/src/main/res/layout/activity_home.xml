@@ -42,16 +42,17 @@
             android:id="@+id/edtSearch"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:hint="Tìm kiếm sân, địa điểm"
-            android:background="@android:color/transparent"
-            android:padding="8dp"/>
+            android:layout_height="48dp"
+        android:hint="Tìm kiếm sân, địa điểm"
+        android:background="@android:color/transparent"
+        android:padding="12dp" />
 
         <ImageView
             android:id="@+id/btnSearch"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_search"/>
+            android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:src="@android:drawable/ic_menu_search"/>
     </LinearLayout>
 
     <!-- Tiêu đề danh sách -->
@@ -64,7 +65,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp"/>
 
-    <!-- RecyclerView động hiển thị “Sân đề xuất” -->
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSuggestedPitches"
         android:layout_width="match_parent"
@@ -95,7 +96,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:minHeight="48dp"> <!-- ✅ vùng chạm tối thiểu -->
+
             <ImageView
                 android:src="@drawable/ic_home"
                 android:layout_width="24dp"
@@ -116,7 +119,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:minHeight="48dp">
+
             <ImageView
                 android:src="@drawable/ic_favorite"
                 android:layout_width="24dp"
@@ -130,17 +135,27 @@
         </LinearLayout>
 
         <!-- Thông báo -->
-        <LinearLayout
-            android:id="@+id/navNotify"
+        <FrameLayout
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_gravity="center"
+            android:minHeight="48dp"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/navNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+
             <ImageView
+                android:id="@+id/ivBell"
                 android:src="@drawable/ic_notify"
                 android:layout_width="24dp"
                 android:layout_height="24dp"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -149,25 +164,41 @@
                 android:textColor="#999999"/>
         </LinearLayout>
 
-        <!-- Tài khoản -->
-        <LinearLayout
-            android:id="@+id/navAccount"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <!-- Badge -->
+        <TextView
+            android:id="@+id/tvBadge"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="end|top"
+            android:layout_marginEnd="14dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/ic_badge_background"
+            android:textColor="@android:color/white"
+            android:textSize="10sp"
             android:gravity="center"
-            android:orientation="vertical">
-            <ImageView
-                android:src="@drawable/ic_account"
-                android:layout_width="24dp"
-                android:layout_height="24dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tài khoản"
-                android:textSize="12sp"
-                android:textColor="#999999"/>
-        </LinearLayout>
-    </LinearLayout>
+            android:visibility="gone" />
+    </FrameLayout>
 
+    <!-- Tài khoản -->
+    <LinearLayout
+        android:id="@+id/navAccount"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:minHeight="48dp"> <!-- ✅ vùng chạm tối thiểu -->
+
+        <ImageView
+            android:src="@drawable/ic_account"
+            android:layout_width="24dp"
+            android:layout_height="24dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tài khoản"
+            android:textSize="12sp"
+            android:textColor="#999999"/>
+    </LinearLayout>
 </LinearLayout>
+    </LinearLayout>
