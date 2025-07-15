@@ -555,4 +555,21 @@ public class BookingRepository {
 
         return totalServiceCost;
     }
+
+    public boolean isTimeSlotBooked(int pitchId, String dateTime, String timeSlot) {
+        SQLiteDatabase db = this.dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT COUNT(*) FROM bookings WHERE pitchId = ? AND dateTime = ? AND timeSlot = ? AND status != 'cancelled'",
+                new String[]{String.valueOf(pitchId), dateTime, timeSlot}
+        );
+        boolean exists = false;
+        if (cursor.moveToFirst()) {
+            exists = cursor.getInt(0) > 0;
+        }
+        cursor.close();
+        db.close();
+        return exists;
+    }
+
+
 }
