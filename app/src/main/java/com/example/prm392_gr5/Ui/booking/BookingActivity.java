@@ -245,14 +245,15 @@ public class BookingActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle("Xác nhận đặt sân")
                     .setMessage("Bạn muốn thanh toán trước hay sau?")
-                    .setPositiveButton("Trả trước", (d, w) -> {
+                    .setPositiveButton("Thanh toán trước", (d, w) -> {
                         Intent i = new Intent(this, PaymentActivity.class);
+                        Toast.makeText(this, "Bạn đã chọn thanh toán trước", Toast.LENGTH_SHORT).show();
                         i.putExtra("bookingIds", ids.toArray(new Long[0]));
                         startActivity(i);
                         finish();
                     })
-                    .setNegativeButton("Trả sau", (d, w) -> {
-                        Toast.makeText(this, "Bạn đã chọn trả sau", Toast.LENGTH_SHORT).show();
+                    .setNegativeButton("Thanh toán sau", (d, w) -> {
+                        Toast.makeText(this, "Bạn đã chọn thanh toán sau", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, HomeActivity.class)
                                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     })
