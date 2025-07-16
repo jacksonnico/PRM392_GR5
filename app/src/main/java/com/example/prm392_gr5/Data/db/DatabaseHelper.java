@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "PitchBooking.db";
-    private static final int DATABASE_VERSION = 8; // ✅ Tăng version
+    private static final int DATABASE_VERSION = 8;
 
     public static final String TBL_USERS = "users";
     public static final String TBL_OWNERS = "owners";
@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(pitchId) REFERENCES pitches(id), " +
                 "FOREIGN KEY(userId) REFERENCES users(id))");
 
-        // ✅ Tạo bảng notifications có thêm isRead
+        //  Tạo bảng notifications có thêm isRead
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TBL_NOTIFICATIONS + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "message TEXT, " +
@@ -89,9 +89,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "price REAL, " +
                 "FOREIGN KEY(pitchId) REFERENCES pitches(id))");
 
-        // ✅ Dữ liệu mẫu
+        //  Dữ liệu mẫu
         db.execSQL("INSERT INTO " + TBL_USERS + " (fullName, phoneNumber, password, role, isActive) VALUES " +
                 "('Nguyễn Xuân Chiến', '0836663285', 'chien2003', 'user', 1)," +
+                "('Nguyễn Văn An', '0912345678', 'an123456', 'user', 1)," +
                 "('Đỗ Văn Mạnh', '0987654321', '0987654321', 'owner', 1)," +
                 "('Admin', '0999999999', 'adminpass', 'admin', 1)," +
                 "('Trần Thị Lan', '0911222333', 'lanpass', 'owner', 1)");
@@ -102,11 +103,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL("INSERT INTO " + TBL_PITCHES + " (ownerId, name, price, address, phoneNumber, openTime, closeTime, imageUrl) VALUES " +
                 "(2, 'Sân Bóng Đá Bao Cấp', 500000, 'Hoa Lac Hi-tech Park, Tân Xá, Hà Nội', '0979504194', '06:00', '22:00', 'https://afd.com.vn/images/image/tin/co-san-bong.jpg')," +
-                "(4, 'Sân Bóng Đại Học Quốc Gia', 550000, 'Tuyến đường Việt Nhật, Thạch Hoà, Hà Nội, 13100', '0961150113', '07:00', '21:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA_gd_yXrzRrWWhzxAKf-XKPWdzayju_O7ig&s.jpg')");
+                "(2, 'Sân Bóng Đại Học Quốc Gia', 550000, 'Tuyến đường Việt Nhật, Thạch Hoà, Hà Nội, 13100', '0961150113', '07:00', '21:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA_gd_yXrzRrWWhzxAKf-XKPWdzayju_O7ig&s.jpg')," +
+                "(4, 'Sân Bóng Mỹ Đình', 600000, 'Phường Mỹ Đình 1, Nam Từ Liêm, Hà Nội', '0912345678', '06:00', '22:00', 'https://phuongthanhngoc.com/media/data/tin-tuc/tong-hop-san-co-nhan-tao-chat-luong-o-ha-noi1.jpg')," +
+                    "(4, 'Sân Bóng Tạo Cầu Giấy', 580000, 'Phường Dịch Vọng, Cầu Giấy, Hà Nội', '0923456789', '06:30', '21:30', 'https://tapdoanconhantao.com/wp-content/uploads/2021/04/du-an-san-bong-tai-cho-gao-4.jpg')");
 
-        db.execSQL("INSERT INTO " + TBL_NOTIFICATIONS + " (message, dateTime, receiverId, receiverType, isRead) VALUES " +
-                "('Đặt sân thành công', '12:02, 10/07/2025', 1, 'user', 0)," +
-                "('Xác nhận thanh toán', '12:03, 10/07/2025', 1, 'user', 0)");
     }
 
     @Override
