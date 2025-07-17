@@ -16,7 +16,7 @@ public class OwnerDashboardActivity extends AppCompatActivity {
     private OwnerDashboardRepository dashboardRepo;
     private DatabaseHelper dbHelper;
     private TextView tvTotalPitches, tvTotalBookings, tvPendingBookings, tvTotalRevenue;
-    private CardView cardManagePitches,  cardPitchSchedule, cardAddServices, cardMessages;
+    private CardView cardManagePitches, cardApproveBookings, cardPitchSchedule, cardAddServices, cardMessages;
     private int ownerId;
     private int userId; // ✅ Thêm biến userId
 
@@ -49,6 +49,7 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         tvPendingBookings = findViewById(R.id.tv_pending_bookings);
 
         cardManagePitches = findViewById(R.id.card_manage_pitches);
+        cardApproveBookings = findViewById(R.id.card_approve_bookings);
         cardPitchSchedule = findViewById(R.id.card_pitch_schedule);
         cardAddServices = findViewById(R.id.card_add_services);
         cardMessages = findViewById(R.id.card_messages);
@@ -58,7 +59,7 @@ public class OwnerDashboardActivity extends AppCompatActivity {
         tvTotalPitches.setText(String.valueOf(dashboardRepo.getTotalPitches(ownerId)));
         tvTotalBookings.setText(String.valueOf(dashboardRepo.getTotalBookings(ownerId)));
         tvPendingBookings.setText(String.valueOf(dashboardRepo.getPendingBookings(ownerId)));
-
+        // tvTotalRevenue.setText(...) nếu bạn có
     }
 
     private void setClickListeners() {
@@ -68,6 +69,11 @@ public class OwnerDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        cardApproveBookings.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ApproveBookingActivity.class);
+            intent.putExtra("ownerId", ownerId);
+            startActivity(intent);
+        });
 
         cardPitchSchedule.setOnClickListener(v -> {
             Intent intent = new Intent(this, PitchScheduleActivity.class);

@@ -50,15 +50,18 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         System.out.println("User Name: " + booking.userName);
         System.out.println("Pitch Name: " + booking.pitchName);
         System.out.println("Raw DateTime: " + booking.dateTime);
-
+//        System.out.println("Deposit: " + booking.depositAmount);
 
         holder.tvUserName.setText(booking.userName);
         holder.tvPitchName.setText(booking.pitchName);
 
-        String formattedDate = formatDateOnly(booking.dateTime); // chỉ lấy ngày
-        String timeSlot = booking.timeSlot != null ? booking.timeSlot : "Không rõ";
-        holder.tvDateTime.setText("Thời gian: " + formattedDate + " " + timeSlot);
+        String formattedDateTime = formatDateTime(booking.dateTime);
+        System.out.println("Final formatted: " + formattedDateTime);
 
+        holder.tvDateTime.setText(formattedDateTime);
+//        holder.tvDeposit.setText(String.format("%.0f VNĐ", booking.depositAmount));
+
+        // Set click listeners
         holder.btnApprove.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onApproveClick(booking.id);
@@ -83,21 +86,34 @@ public class BookingAdapter extends RecyclerView.Adapter<BookingAdapter.ViewHold
         return bookings.size();
     }
 
-    private String formatDateOnly(String dateTime) {
+    private String formatDateTime(String dateTime) {
         if (dateTime == null || dateTime.isEmpty()) {
-            return "Chưa rõ ngày";
+            return "Chưa có thời gian";
         }
+
         try {
+            // Debug log
+            System.out.println("Input dateTime: " + dateTime);
+
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+
             Date date = inputFormat.parse(dateTime);
-            return outputFormat.format(date);
+            if (date != null) {
+                String result = outputFormat.format(date);
+                System.out.println("Formatted result: " + result);
+                return result;
+            } else {
+                System.out.println("Parse returned null");
+                return dateTime;
+            }
+
         } catch (Exception e) {
+            System.out.println("Parse error: " + e.getMessage());
             e.printStackTrace();
             return dateTime;
         }
     }
-
 
     public void updateBookings(List<BookingInfo> newBookings) {
         this.bookings = newBookings;

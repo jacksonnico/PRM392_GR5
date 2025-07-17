@@ -344,20 +344,22 @@ public class PitchRepository {
                     continue; // Skip this malformed entry
                 }
 
-                String bookingTimeSlotStr = TIME_SLOT_FORMAT.format(bookingStartDateTime); // ví dụ "06:00"
+                String bookingTimeSlotStr = TIME_SLOT_FORMAT.format(bookingStartDateTime); // Ví dụ: "10:00"
+                Log.d("PitchRepository", "Parsed booking time slot: " + bookingTimeSlotStr);
+
 
                 for (ScheduleInfo schedule : scheduleList) {
-                    if (schedule.timeSlot.startsWith(bookingTimeSlotStr)) {
+                    // So sánh khung giờ của booking với khung giờ được tạo
+                    if (schedule.timeSlot.equals(bookingTimeSlotStr)) {
                         schedule.isBooked = true;
                         schedule.customerName = cursor.getString(cursor.getColumnIndexOrThrow("fullName"));
                         schedule.customerPhone = cursor.getString(cursor.getColumnIndexOrThrow("phoneNumber"));
                         schedule.status = cursor.getString(cursor.getColumnIndexOrThrow("status"));
                         schedule.bookingId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
-                        schedule.bookingDate = selectedDate.getTime(); // ✅ rất quan trọng để adapter so sánh ngày
-                        break;
+                        Log.d("PitchRepository", "Matched schedule slot: " + schedule.timeSlot + " Status: " + schedule.status);
+                        break; // Đã tìm thấy và cập nhật, thoát vòng lặp
                     }
                 }
-
             }
         } finally {
             cursor.close();
@@ -369,9 +371,10 @@ public class PitchRepository {
 
     private List<ScheduleInfo> generateTimeSlots(Pitch pitch) {
         List<ScheduleInfo> timeSlots = new ArrayList<>();
-        SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat hourMinuteFormat = new SimpleDateFormat("HH:mm", Locale.getDefault()); // Dùng cho openTime/closeTime của pitch
 
         try {
+            // Parse openTime và closeTime từ Pitch
             Date openTime = hourMinuteFormat.parse(pitch.getOpenTime());
             Date closeTime = hourMinuteFormat.parse(pitch.getCloseTime());
 
@@ -379,6 +382,7 @@ public class PitchRepository {
             Calendar openCal = Calendar.getInstance();
             Calendar closeCal = Calendar.getInstance();
 
+            // Set chỉ giờ và phút từ openTime/closeTime
             openCal.setTime(openTime);
             closeCal.setTime(closeTime);
 
@@ -387,31 +391,35 @@ public class PitchRepository {
             slotCal.set(Calendar.SECOND, 0);
             slotCal.set(Calendar.MILLISECOND, 0);
 
+            // Giờ kết thúc cũng chỉ lấy giờ và phút
             Calendar endTimeForLoop = Calendar.getInstance();
             endTimeForLoop.set(Calendar.HOUR_OF_DAY, closeCal.get(Calendar.HOUR_OF_DAY));
             endTimeForLoop.set(Calendar.MINUTE, closeCal.get(Calendar.MINUTE));
             endTimeForLoop.set(Calendar.SECOND, 0);
             endTimeForLoop.set(Calendar.MILLISECOND, 0);
 
-            while (slotCal.before(endTimeForLoop)) {
-                Date start = slotCal.getTime();
-                slotCal.add(Calendar.HOUR_OF_DAY, 2); // 2 tiếng 1 slot
-                Date end = slotCal.getTime();
+            Log.d("PitchRepository", "Generating time slots from " + hourMinuteFormat.format(slotCal.getTime()) + " to " + hourMinuteFormat.format(endTimeForLoop.getTime()));
 
+            // Tạo các khung giờ, mỗi khung 1 tiếng
+            while (slotCal.before(endTimeForLoop) || (slotCal.get(Calendar.HOUR_OF_DAY) == endTimeForLoop.get(Calendar.HOUR_OF_DAY) && slotCal.get(Calendar.MINUTE) == endTimeForLoop.get(Calendar.MINUTE))) {
                 ScheduleInfo schedule = new ScheduleInfo();
-                schedule.timeSlot = TIME_SLOT_FORMAT.format(start) + "-" + TIME_SLOT_FORMAT.format(end);
+                schedule.timeSlot = TIME_SLOT_FORMAT.format(slotCal.getTime()); // Định dạng HH:mm
                 schedule.isBooked = false;
                 timeSlots.add(schedule);
+                Log.d("PitchRepository", "Generated slot: " + schedule.timeSlot);
+
+                // Cộng thêm 1 tiếng cho khung giờ tiếp theo
+                slotCal.add(Calendar.HOUR_OF_DAY, 1);
             }
 
         } catch (ParseException e) {
-            Log.e("PitchRepository", "Lỗi khi tạo khung giờ: " + e.getMessage());
-            return generateDefaultTimeSlots(); // fallback
+            Log.e("PitchRepository", "Error parsing pitch open/close time: " + e.getMessage());
+            // Fallback to default 08:00-22:00 if pitch times are invalid
+            return generateDefaultTimeSlots();
         }
 
         return timeSlots;
     }
-
 
     // Fallback method to generate default time slots
     private List<ScheduleInfo> generateDefaultTimeSlots() {

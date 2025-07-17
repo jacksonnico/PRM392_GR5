@@ -132,11 +132,8 @@ public class AccountActivity extends Activity {
                     intent = new Intent(this, ManagePitchActivity.class);  // Điều hướng đến màn hình quản lý sân của owner
                     break;
                 case "user":
-
-                    intent = new Intent(this, HomeActivity.class);  // Điều hướng đến màn hình chính của user
-                    break;
                 default:
-                    intent = new Intent(this, HomeActivity.class); // hoặc màn hình thông báo lỗi
+                    intent = new Intent(this, HomeActivity.class);  // Điều hướng đến màn hình chính của user
                     break;
             }
 

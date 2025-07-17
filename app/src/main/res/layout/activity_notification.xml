@@ -1,15 +1,17 @@
+<!-- res/layout/activity_notification.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
+    android:background="@color/background_color">
 
-    <!-- Header với Toolbar -->
+    <!-- Header với title và action buttons -->
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        app:elevation="4dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -18,36 +20,47 @@
             android:background="@color/colorPrimary"
             app:title="Thông báo"
             app:titleTextColor="@android:color/white"
-            app:navigationIcon="@drawable/ic_arrow_back_white" />
+            app:navigationIcon="@drawable/ic_arrow_back_white">
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Nội dung -->
+
+
+    <!-- Content area -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background_color">
 
-        <!-- RecyclerView -->
+        <!-- RecyclerView for notifications -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvNotifications"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingVertical="8dp"
-            android:paddingHorizontal="4dp"
-            android:clipToPadding="false" />
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:overScrollMode="ifContentScrolls" />
 
-        <!-- Empty State -->
+        <!-- Empty state -->
         <LinearLayout
             android:id="@+id/emptyStateLayout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:gravity="center">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:src="@drawable/ic_notifications_empty"
                 android:layout_marginBottom="16dp"
                 app:tint="@color/text_hint" />
@@ -56,20 +69,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Không có thông báo nào"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textColor="@color/text_secondary"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bạn sẽ thấy thông báo mới tại đây"
+                android:text="Thông báo sẽ xuất hiện tại đây"
                 android:textSize="14sp"
-                android:textColor="@color/text_hint"
-                android:layout_marginTop="4dp" />
+                android:textColor="@color/text_hint" />
+
         </LinearLayout>
 
-        <!-- Loading -->
+        <!-- Loading indicator -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -79,7 +93,7 @@
 
     </FrameLayout>
 
-    <!-- Nút Refresh -->
+    <!-- Floating Action Button for new notification/refresh -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabRefresh"
         android:layout_width="wrap_content"
@@ -88,5 +102,8 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_refresh"
         app:tint="@android:color/white"
-        app:backgroundTint="@color/colorPrimary" />
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp" />
+
 </LinearLayout>

@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ApproveBookingActivity extends AppCompatActivity implements BookingAdapter.OnBookingActionListener, BookingAdapter.OnBookingStatusChangedListener {
-
-
+    private PitchScheduleActivity pitchSchedule;
     private BookingRepository bookingRepository;
     private RecyclerView recyclerView;
     private BookingAdapter adapter;
@@ -36,29 +35,17 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_approve_booking);
-
         bookingRepository = new BookingRepository(this);
-
-        // Lấy ownerId từ Intent
-        ownerId = getIntent().getIntExtra(PitchScheduleActivity.EXTRA_OWNER_ID, -1);
-        if (ownerId == -1) {
-            // Xử lý trường hợp không nhận được ownerId (ví dụ: hiển thị lỗi hoặc đóng Activity)
-            Toast.makeText(this, "Không tìm thấy thông tin chủ sân.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
+        ownerId = 2;
         initViews();
         loadPendingBookings();
     }
 
     @Override
     public void onStatusChanged() {
-        // Sau khi trạng thái booking thay đổi, cần thông báo cho PitchScheduleActivity
-        // rằng lịch cần được tải lại. Cách tốt nhất là dựa vào onResume() của PitchScheduleActivity.
-        // Hoặc bạn có thể sử dụng LocalBroadcastManager nếu muốn cập nhật ngay lập tức
-        // mà không cần đợi onResume. Tuy nhiên, với trường hợp này, onResume() thường đủ.
-        // pitchSchedule.loadSchedule(); // Dòng này không hoạt động vì pitchSchedule là null và không phải là cách giao tiếp đúng.
+        if (pitchSchedule != null) {
+            pitchSchedule.loadSchedule();
+        }
     }
 
     private void initViews() {
@@ -79,16 +66,16 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
                 bookingList.add(new BookingInfo(b, pitch));
             }
         }
+
         adapter.updateBookings(bookingList);
     }
+
 
     private void updateBookingStatus(int bookingId, String status) {
         boolean success = bookingRepository.updateBookingStatus(bookingId, status);
         if (success) {
             Toast.makeText(this, status.equals("approved") ? "Đã duyệt booking" : "Đã từ chối booking", Toast.LENGTH_SHORT).show();
             loadPendingBookings();
-            // Sau khi cập nhật, có thể muốn cập nhật lại lịch ở PitchScheduleActivity
-
         } else {
             Toast.makeText(this, "Lỗi khi cập nhật trạng thái", Toast.LENGTH_SHORT).show();
         }
@@ -102,7 +89,7 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
         TextView tvPitchName = dialogView.findViewById(R.id.tv_pitch_name);
         TextView tvDateTime = dialogView.findViewById(R.id.tv_date_time);
         TextView tvServices = dialogView.findViewById(R.id.tv_services);
-
+        TextView tvDeposit = dialogView.findViewById(R.id.tv_deposit);
 
         tvUserName.setText(booking.userName);
         tvUserPhone.setText(booking.userPhone != null ? booking.userPhone : "–");
@@ -140,13 +127,13 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
     @Override
     public void onApproveClick(int bookingId) {
         updateBookingStatus(bookingId, "approved");
-
+        onStatusChanged();
     }
 
     @Override
     public void onRejectClick(int bookingId) {
         updateBookingStatus(bookingId, "rejected");
-
+        onStatusChanged();
     }
 
     @Override
@@ -157,6 +144,6 @@ public class ApproveBookingActivity extends AppCompatActivity implements Booking
     @Override
     protected void onResume() {
         super.onResume();
-        loadPendingBookings(); // Đảm bảo danh sách booking được làm mới mỗi khi activity hiện lại
+        loadPendingBookings();
     }
 }

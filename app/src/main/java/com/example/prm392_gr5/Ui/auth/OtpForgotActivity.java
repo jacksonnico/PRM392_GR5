@@ -39,7 +39,7 @@ public class OtpForgotActivity extends Activity {
 
         txtResend.setOnClickListener(v -> {
             otpCode = String.valueOf((int) (100000 + Math.random() * 900000));
-            NotificationHelper.showOtpNotification(this, "Mã OTP Đặt lại mật khẩu", "Mã OTP của bạn là: " + otpCode);
+            Toast.makeText(this, "Mã OTP mới: " + otpCode, Toast.LENGTH_LONG).show();
             startCountDown();
         });
     }
@@ -99,25 +99,16 @@ public class OtpForgotActivity extends Activity {
     }
 
     private void verifyOtp() {
-        // Check if the OTP is expired
-        if (isOtpExpired) {
-            Toast.makeText(this, "Mã OTP đã hết hạn, vui lòng yêu cầu mã mới", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Build the entered OTP from the EditTexts
         StringBuilder inputOtp = new StringBuilder();
         for (EditText e : otpInputs) {
             inputOtp.append(e.getText().toString());
         }
 
-        // Compare entered OTP with the OTP sent
         if (!inputOtp.toString().equals(otpCode)) {
             Toast.makeText(this, "Sai mã OTP", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Reset the password if OTP is correct
         boolean ok = userRepo.resetPassword(phone, newPassword);
         if (ok) {
             Toast.makeText(this, "Đặt lại mật khẩu thành công", Toast.LENGTH_SHORT).show();
@@ -129,5 +120,4 @@ public class OtpForgotActivity extends Activity {
             Toast.makeText(this, "Số điện thoại không tồn tại", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

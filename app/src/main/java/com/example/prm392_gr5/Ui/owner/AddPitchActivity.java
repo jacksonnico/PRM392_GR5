@@ -7,7 +7,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,8 +37,6 @@ public class AddPitchActivity extends AppCompatActivity {
     private EditText etPhysicalDetails;
     private EditText etReferencePrice;
     private EditText etNotes;
-    private EditText etImageUrl;
-    private EditText etPhoneNumber;
     private Button btnSavePitch;
     private PitchRepository pitchRepository;
     private ActivityResultLauncher<Intent> mapPickerLauncher;
@@ -66,8 +63,6 @@ public class AddPitchActivity extends AppCompatActivity {
         etPhysicalDetails = findViewById(R.id.et_physical_details);
         etReferencePrice = findViewById(R.id.et_reference_price);
         etNotes = findViewById(R.id.et_notes);
-        etImageUrl = findViewById(R.id.et_image_url);
-        etPhoneNumber = findViewById(R.id.et_phone_number);
         btnSavePitch = findViewById(R.id.btn_save_pitch);
 
         // Thiết lập time picker cho giờ mở/đóng cửa
@@ -78,19 +73,12 @@ public class AddPitchActivity extends AppCompatActivity {
         tvOpenTime.setFocusable(false);
         tvOpenTime.setClickable(true);
         tvOpenTime.setInputType(InputType.TYPE_NULL);
-        // Đảm bảo có giá trị mặc định để tránh lỗi khi validate
-        if (tvOpenTime.getText().toString().isEmpty()) {
-            tvOpenTime.setText("07:00");
-        }
-
+        tvOpenTime.setText("07:00"); // Giá trị mặc định
 
         tvCloseTime.setFocusable(false);
         tvCloseTime.setClickable(true);
         tvCloseTime.setInputType(InputType.TYPE_NULL);
-        // Đảm bảo có giá trị mặc định để tránh lỗi khi validate
-        if (tvCloseTime.getText().toString().isEmpty()) {
-            tvCloseTime.setText("22:00");
-        }
+        tvCloseTime.setText("22:00"); // Giá trị mặc định
     }
 
     private void setupMapPicker() {
@@ -173,16 +161,20 @@ public class AddPitchActivity extends AppCompatActivity {
         String description = etDescription.getText().toString().trim();
         String physicalDetails = etPhysicalDetails.getText().toString().trim();
         String notes = etNotes.getText().toString().trim();
-        String imageUrl = etImageUrl.getText().toString().trim(); // Lấy URL ảnh
-        String phoneNumber = etPhoneNumber.getText().toString().trim();
+
         // Xử lý giá
         Double price = parsePrice(etReferencePrice);
         if (price == null) {
             return; // Lỗi đã được hiển thị trong parsePrice
         }
 
-        // Validate dữ liệu bắt buộc và định dạng
-        if (!validateInput(name, address, openTime, closeTime, price, imageUrl,phoneNumber)) {
+        // Validate dữ liệu bắt buộc
+        if (!validateRequiredFields(name, address, openTime, closeTime, price)) {
+            return;
+        }
+
+        // Validate giờ mở/đóng cửa
+        if (!validateBusinessHours(openTime, closeTime)) {
             return;
         }
 
@@ -194,8 +186,8 @@ public class AddPitchActivity extends AppCompatActivity {
                 price,
                 openTime,
                 closeTime,
-                "", // phoneNumber - giữ nguyên nếu bạn chưa có
-                imageUrl  // Truyền imageUrl vào đây
+                "", // phoneNumber - có thể thêm field này sau
+                ""  // imageUrl - có thể thêm field này sau
         );
 
         if (success) {
@@ -217,19 +209,11 @@ public class AddPitchActivity extends AppCompatActivity {
         try {
             String priceStr = priceField.getText().toString().trim();
 
-            if (priceStr.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập giá thuê sân.", Toast.LENGTH_SHORT).show();
-                priceField.requestFocus();
-                return null;
-            }
-
-            // Loại bỏ các ký tự không phải số và dấu chấm
+            // Loại bỏ các ký tự không phải số
             priceStr = priceStr.replaceAll("[^0-9.]", "");
 
-            // Xử lý trường hợp chuỗi chỉ có dấu chấm hoặc rỗng sau khi loại bỏ ký tự
-            if (priceStr.isEmpty() || priceStr.equals(".")) {
-                Toast.makeText(this, "Giá thuê sân không hợp lệ. Vui lòng nhập số.", Toast.LENGTH_SHORT).show();
-                priceField.requestFocus();
+            if (priceStr.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập giá thuê sân.", Toast.LENGTH_SHORT).show();
                 return null;
             }
 
@@ -237,7 +221,6 @@ public class AddPitchActivity extends AppCompatActivity {
 
             if (price <= 0) {
                 Toast.makeText(this, "Giá thuê sân phải lớn hơn 0.", Toast.LENGTH_SHORT).show();
-                priceField.requestFocus();
                 return null;
             }
 
@@ -245,24 +228,16 @@ public class AddPitchActivity extends AppCompatActivity {
 
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Giá thuê sân không hợp lệ. Vui lòng nhập số.", Toast.LENGTH_SHORT).show();
-            priceField.requestFocus();
             return null;
         }
     }
 
-    // Phương thức validate mới tập trung hơn
-    private boolean validateInput(String name, String address, String openTime, String closeTime, Double price, String imageUrl, String phoneNumber) {
+    private boolean validateRequiredFields(String name, String address, String openTime, String closeTime, Double price) {
         if (name.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập tên sân.", Toast.LENGTH_SHORT).show();
             etPitchName.requestFocus();
             return false;
         }
-        if (name.length() < 3) {
-            Toast.makeText(this, "Tên sân phải có ít nhất 3 ký tự.", Toast.LENGTH_SHORT).show();
-            etPitchName.requestFocus();
-            return false;
-        }
-
 
         if (address.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập địa chỉ sân.", Toast.LENGTH_SHORT).show();
@@ -270,46 +245,19 @@ public class AddPitchActivity extends AppCompatActivity {
             return false;
         }
 
-        if (openTime.isEmpty() || openTime.equals("00:00") && tvOpenTime.getText().toString().equals("00:00")) { // Thêm kiểm tra mặc định
+        if (openTime.isEmpty() || openTime.equals("Chưa có")) {
             Toast.makeText(this, "Vui lòng chọn giờ mở cửa.", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (closeTime.isEmpty() || closeTime.equals("00:00") && tvCloseTime.getText().toString().equals("00:00")) { // Thêm kiểm tra mặc định
+
+        if (closeTime.isEmpty() || closeTime.equals("thời gian mở cửa")) {
             Toast.makeText(this, "Vui lòng chọn giờ đóng cửa.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        // Validate giờ mở/đóng cửa
-        if (!validateBusinessHours(openTime, closeTime)) {
-            return false;
-        }
-
         if (price == null || price <= 0) {
-            // Toast đã được hiển thị trong parsePrice
-            return false;
-        }
-
-        // Validate URL ảnh
-        if (imageUrl.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập URL ảnh chính của sân.", Toast.LENGTH_SHORT).show();
-            etImageUrl.requestFocus();
-            return false;
-        }
-        if (!Patterns.WEB_URL.matcher(imageUrl).matches()) {
-            Toast.makeText(this, "URL ảnh không hợp lệ. Vui lòng nhập đúng định dạng URL.", Toast.LENGTH_LONG).show();
-            etImageUrl.requestFocus();
-            return false;
-        }
-        if (phoneNumber.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập số điện thoại liên hệ.", Toast.LENGTH_SHORT).show();
-            etPhoneNumber.requestFocus();
-            return false;
-        }
-        // Có thể dùng Patterns.PHONE hoặc regex tùy biến để validate số điện thoại
-        // Ví dụ đơn giản: kiểm tra chỉ chứa số và có độ dài hợp lý (ví dụ 7-15 chữ số)
-        if (!phoneNumber.matches("^[0-9]{7,15}$")) { // Chỉ chấp nhận 7-15 chữ số
-            Toast.makeText(this, "Số điện thoại không hợp lệ. Vui lòng nhập từ 7 đến 15 chữ số.", Toast.LENGTH_LONG).show();
-            etPhoneNumber.requestFocus();
+            Toast.makeText(this, "Vui lòng nhập giá thuê sân hợp lệ.", Toast.LENGTH_SHORT).show();
+            etReferencePrice.requestFocus();
             return false;
         }
 
@@ -341,10 +289,10 @@ public class AddPitchActivity extends AppCompatActivity {
             return false;
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // Cleanup nếu cần
     }
 }
-

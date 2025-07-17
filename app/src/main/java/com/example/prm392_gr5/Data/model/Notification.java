@@ -6,8 +6,7 @@ public class Notification {
     private String time;
     private int receiverId;
     private String receiverRole;
-    private String userName; // Cho Owner xem người gửi
-    private boolean isRead; // 👈 Trạng thái đã đọc
+    private String userName; // 👈 Thêm field này
 
     public Notification(int id, String content, String time, int receiverId, String receiverRole) {
         this.id = id;
@@ -17,16 +16,18 @@ public class Notification {
         this.receiverRole = receiverRole;
     }
 
-    // Getters & Setters
+    // Getter và Setter cho userName
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public int getId() { return id; }
     public String getContent() { return content; }
     public String getTime() { return time; }
     public int getReceiverId() { return receiverId; }
     public String getReceiverRole() { return receiverRole; }
-
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
-
-    public boolean isRead() { return isRead; }
-    public void setRead(boolean read) { isRead = read; }
 }
